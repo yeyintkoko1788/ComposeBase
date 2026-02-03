@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Compose Base</string>
+
+    <string name="pref_access_token" translatable="false">AccessToken</string>
+    <string name="pref_refresh_token" translatable="false">RefreshToken</string>
+    <string name="pref_secret_header_key" translatable="false">SecretHeaderKey</string>
+    <string name="pref_user_id" translatable="false">UserID</string>
+    <string name="pref_is_admin" translatable="false">IsAdmin</string>
+    <string name="pref_is_guest" translatable="false">IsGuest</string>
+    <string name="pref_is_first_time" translatable="false">IsFirstTime</string>
+    <string name="pref_is_phone_login_available" translatable="false">IsPhoneLoginAvailable</string>
+    <string name="pref_is_email_login_available" translatable="false">IsEmailLoginAvailable</string>
+    <string name="pref_is_notification_ask" translatable="false">IsNotificationAsked</string>
+    <string name="pref_locale" translatable="false">Locale</string>
+    <string name="pref_my_collection" translatable="false">MyCollection</string>
+    <string name="pref_splash_screen_photo" translatable="false">SplashScreenPhoto</string>
+    <string name="pref_onboarding_screen_photo" translatable="false">OnBoardingScreenPhoto</string>
+    <string name="pref_welcome_screen_photo" translatable="false">WelcomeScreenPhoto</string>
+    <string name="pref_app_theme_photo" translatable="false">AppThemePhoto</string>
+    <string name="pref_home_screen_photo" translatable="false">HomeScreenPhoto</string>
+    <string name="pref_user_city" translatable="false">UserCity</string>
+    <string name="pref_user_country" translatable="false">UserCountry</string>
+    <string name="pref_chat_background" translatable="false">ChatBackground</string>
+    <string name="pref_push_token" translatable="false">PushyToken</string>
+    <string name="pref_user_permission" translatable="false">UserPermission</string>
+    <string name="pref_notification_setting" translatable="false">NotificationSetting</string>
+    <string name="pref_notification_sound_url" translatable="false">NotificationSoundUrl</string>
+    <string name="pref_version_update" translatable="false">VersionUpdate</string>
+    <string name="pref_current_location_lat" translatable="false">current_location_lat</string>
+    <string name="pref_current_location_long" translatable="false">current_location_long</string>
+    <string name="pref_current_location_name" translatable="false">current_location_name\n</string>
+
+    <string name="error_no_internet_connection">No internet connection!</string>
+    <string name="error_generic">Error occurred. Please try again.</string>
+    <string name="error_server_404">No data found</string>
+    <string name="error_server_500">Something went wrong!</string>
+</resources>
