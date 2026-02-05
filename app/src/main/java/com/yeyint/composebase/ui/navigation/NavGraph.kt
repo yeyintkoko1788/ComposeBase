@@ -8,25 +8,36 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navigation
+import com.yeyint.composebase.ui.screens.CalendarScreen
 import com.yeyint.composebase.ui.screens.HomeScreen
 import com.yeyint.composebase.ui.screens.LoginScreen
 import com.yeyint.composebase.ui.screens.ProfileScreen
 import com.yeyint.composebase.ui.screens.SearchScreen
 
+
 @Composable
 fun NavGraph(navController: NavHostController, modifier: Modifier) {
     NavHost(
         navController = navController,
-        startDestination = NavRoute.Login.path,
-        modifier = modifier
+        startDestination = "auth"
     ) {
-        addLoginScreen(navController, this)
+        navigation(
+            route = "auth",
+            startDestination = NavRoute.Login.path
+        ) {
+            addLoginScreen(navController, this)
+        }
 
-        addHomeScreen(navController, this)
-
-        addProfileScreen(navController, this)
-
-        addSearchScreen(navController, this)
+        navigation(
+            route = "main",
+            startDestination = NavRoute.Home.path
+        ) {
+            addHomeScreen(navController, this)
+            addProfileScreen(navController, this)
+            addSearchScreen(navController, this)
+            addCalendarScreen(this)
+        }
     }
 }
 
@@ -37,7 +48,9 @@ private fun addLoginScreen(
     navGraphBuilder.composable(route = NavRoute.Login.path) {
         LoginScreen(
             navigateToHome = {
-                navController.navigate(NavRoute.Home.path)
+                navController.navigate("main") {
+                    popUpTo("auth") { inclusive = true }
+                }
             }
         )
     }
@@ -63,7 +76,9 @@ private fun addHomeScreen(
 }
 
 private fun popUpToLogin(navController: NavHostController) {
-    navController.popBackStack(NavRoute.Login.path, inclusive = false)
+    navController.navigate("auth") {
+        popUpTo("main") { inclusive = true }
+    }
 }
 
 private fun addProfileScreen(
@@ -94,26 +109,40 @@ private fun addProfileScreen(
     }
 }
 
+private fun addCalendarScreen(
+    navGraphBuilder: NavGraphBuilder
+) {
+    navGraphBuilder.composable(route = NavRoute.Calendar.path) {
+        CalendarScreen()
+    }
+}
+
 private fun addSearchScreen(
     navController: NavHostController,
     navGraphBuilder: NavGraphBuilder
 ) {
-    navGraphBuilder.composable(
-        route = NavRoute.Search.withArgsFormat(NavRoute.Search.query),
-        arguments = listOf(
-            navArgument(NavRoute.Search.query) {
-                type = NavType.StringType
-                nullable = true
-            }
-        )
-    ) { navBackStackEntry ->
+    navGraphBuilder.navigation(
+        route = NavRoute.Search.path, // "search"
+        startDestination = NavRoute.Search.withArgsFormat(NavRoute.Search.query)
+    ) {
 
-        val args = navBackStackEntry.arguments
+        composable(
+            route = NavRoute.Search.withArgsFormat(NavRoute.Search.query),
+            arguments = listOf(
+                navArgument(NavRoute.Search.query) {
+                    type = NavType.StringType
+                    nullable = true
+                }
+            )
+        ) { navBackStackEntry ->
 
-        SearchScreen(
-            query = args?.getString(NavRoute.Search.query),
-            popBackStack = { navController.popBackStack() },
-            popUpToLogin = { popUpToLogin(navController) }
-        )
+            val args = navBackStackEntry.arguments
+
+            SearchScreen(
+                query = args?.getString(NavRoute.Search.query),
+                popBackStack = { navController.popBackStack() },
+                popUpToLogin = { popUpToLogin(navController) }
+            )
+        }
     }
 }

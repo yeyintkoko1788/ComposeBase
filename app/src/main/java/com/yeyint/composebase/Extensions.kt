@@ -43,6 +43,8 @@ import androidx.core.app.ComponentActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.yeyint.composebase.uitls.LOCALE_EN
 import com.yeyint.composebase.uitls.LOCALE_MM
 import com.google.gson.Gson
@@ -87,7 +89,6 @@ fun View.setVisible(isVisible: Boolean) {
         this.visibility = View.GONE
     }
 }
-
 
 //this is myanmar
 @SuppressLint("SimpleDateFormat")

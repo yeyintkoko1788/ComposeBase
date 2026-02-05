@@ -1,6 +1,7 @@
 package com.yeyint.composebase.ui.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -9,61 +10,61 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
-fun BottomBarNav(navController: NavController) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+fun BottomBarNav(navController: NavHostController) {
 
-    val shouldShowBottomBar = when (currentRoute) {
-        // List all routes that should have a bottom bar
-        NavRoute.Home.path -> true
-        NavRoute.Search.withArgsFormat(NavRoute.Search.query) -> true
-        else -> false // All other routes will not show the bar
-    }
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
 
-    if (shouldShowBottomBar) {
-        NavigationBar {
+    NavigationBar {
 
-            val homeSelected = currentRoute == NavRoute.Home.path
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = NavRoute.Home.path
-                    )
-                },
-                selected = homeSelected,
-                onClick = {
-                    if(!homeSelected) {
-                        navController.navigate(NavRoute.Home.path) {
-                            popUpTo(NavRoute.Home.path) { inclusive = true }
-                        }
+        NavigationBarItem(
+            selected = currentRoute == NavRoute.Home.path,
+            onClick = {
+                navController.navigate(NavRoute.Home.path) {
+                    popUpTo(NavRoute.Home.path) {
+                        inclusive = false
                     }
-                },
-                label = {Text(NavRoute.Home.path)}
-            )
+                    launchSingleTop = true
+                }
+            },
+            icon = { Icon(Icons.Default.Home, null) },
+            label = { Text("Home") }
+        )
 
-            val searchSelected =  currentRoute == NavRoute.Search.withArgsFormat(NavRoute.Search.query)
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = NavRoute.Home.path
-                    )
-                },
-                selected = searchSelected,
-                onClick = {
-                    if(!searchSelected) {
-                        navController.navigate(NavRoute.Search.withArgs("Liang Moi"))
+        NavigationBarItem(
+            selected = currentRoute == NavRoute.Calendar.path,
+            onClick = {
+                navController.navigate(NavRoute.Calendar.path) {
+                    popUpTo(NavRoute.Home.path) {
+                        inclusive = false
                     }
-                },
-                label = { Text(NavRoute.Search.path) }
-            )
-        }
-    }else{
-        return
+                    launchSingleTop = true
+                }
+            },
+            icon = { Icon(Icons.Default.CalendarMonth, null) },
+            label = { Text("Calendar") }
+        )
+
+        NavigationBarItem(
+            selected = currentRoute?.startsWith(NavRoute.Search.path) == true,
+            onClick = {
+                navController.navigate(
+                    NavRoute.Search.withArgs("Liang Moi")
+                ) {
+                    popUpTo(NavRoute.Home.path) {
+                        inclusive = false
+                    }
+                    launchSingleTop = true
+                }
+            },
+            icon = { Icon(Icons.Default.Search, null) },
+            label = { Text("Search") }
+        )
     }
 }
+
+
