@@ -28,4 +28,5 @@ val text_heading = n09
 val text_label = n05
 val text_body = n06
 val text_dark = n08
+val text_light = n05
 val text_fix_white = n01

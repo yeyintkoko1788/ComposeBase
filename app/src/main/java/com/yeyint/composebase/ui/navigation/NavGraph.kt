@@ -1,5 +1,6 @@
 package com.yeyint.composebase.ui.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
@@ -17,7 +18,7 @@ import com.yeyint.composebase.ui.screens.SearchScreen
 
 
 @Composable
-fun NavGraph(navController: NavHostController, modifier: Modifier) {
+fun NavGraph(navController: NavHostController, contentPadding: PaddingValues) {
     NavHost(
         navController = navController,
         startDestination = "auth"
@@ -31,12 +32,12 @@ fun NavGraph(navController: NavHostController, modifier: Modifier) {
 
         navigation(
             route = "main",
-            startDestination = NavRoute.Home.path
+            startDestination = NavRoute.Home.path,
         ) {
             addHomeScreen(navController, this)
             addProfileScreen(navController, this)
             addSearchScreen(navController, this)
-            addCalendarScreen(this)
+            addCalendarScreen(this, paddingValues = contentPadding)
         }
     }
 }
@@ -110,10 +111,11 @@ private fun addProfileScreen(
 }
 
 private fun addCalendarScreen(
-    navGraphBuilder: NavGraphBuilder
+    navGraphBuilder: NavGraphBuilder,
+    paddingValues: PaddingValues
 ) {
     navGraphBuilder.composable(route = NavRoute.Calendar.path) {
-        CalendarScreen()
+        CalendarScreen(paddingValues)
     }
 }
 

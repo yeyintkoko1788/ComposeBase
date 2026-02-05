@@ -3,8 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.dagger.hilt.android)
-    id("androidx.navigation.safeargs.kotlin")
-    id("kotlin-kapt")
+    alias(libs.plugins.navigation.safeargs)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.composebase"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -49,8 +49,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     externalNativeBuild {
@@ -59,9 +59,12 @@ android {
         }
     }
 
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
+
     buildFeatures {
         buildConfig = true
         compose = true
@@ -116,9 +119,14 @@ dependencies {
     //room
     implementation(libs.room.rumtime)
     implementation(libs.room.ktx)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
 
     //hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
+//    implementation(libs.androidx.hilt.common)
+//    implementation (libs.androidx.hilt.work)
+//    implementation(libs.hilt.navigation.compose)
+
+    implementation(libs.kizitonwose.calendar)
 }

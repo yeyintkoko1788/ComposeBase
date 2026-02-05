@@ -44,7 +44,7 @@ private fun MainScreen() {
             }
         ) { paddingValues ->
             NavGraph(
-                modifier = Modifier.padding(paddingValues),
+                contentPadding = paddingValues,
                 navController = appState.navController
             )
         }
