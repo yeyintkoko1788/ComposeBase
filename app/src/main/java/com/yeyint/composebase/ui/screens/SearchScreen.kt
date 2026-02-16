@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yeyint.composebase.ui.common.DefaultButton
+import com.yeyint.composebase.ui.common.PrimaryButton
 import com.yeyint.composebase.ui.theme.BasePreviewWrapper
 
 @Composable
@@ -26,12 +26,12 @@ fun SearchScreen(
         Spacer(modifier = Modifier.height(5.dp))
         Text("Query: $query", fontSize = 40.sp)
 
-        DefaultButton(
+        PrimaryButton(
             text = "Back",
             onClick = popBackStack
         )
 
-        DefaultButton(
+        PrimaryButton(
             text = "Log Out",
             onClick = popUpToLogin
         )

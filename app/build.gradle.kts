@@ -95,7 +95,12 @@ dependencies {
     implementation(libs.compose.material.icons)
     implementation(libs.coil.compose)
     implementation(libs.lifecycle.viewmodel.compose)
+    //nav2
     implementation(libs.android.navigation.compose)
+    //nav3
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.kotlinx.serialization.json)
 
     debugImplementation(libs.github.chucker.debug)
 

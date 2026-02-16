@@ -3,78 +3,134 @@ package com.yeyint.composebase.ui.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.compose.rememberNavController
-import com.yeyint.composebase.network.showLogD
 import com.yeyint.composebase.ui.navigation.BottomBarNav
-import com.yeyint.composebase.ui.navigation.NavGraph
+import com.yeyint.composebase.ui.navigation.NavGraph3
 import com.yeyint.composebase.ui.navigation.NavRoute
 import com.yeyint.composebase.ui.screens.CalendarTopBar
+import com.yeyint.composebase.ui.setEdgeToEdgeConfig
 import com.yeyint.composebase.ui.theme.BaseTheme
 import com.yeyint.composebase.ui.theme.ComposeBaseTheme
 
 class MainActivity : ComponentActivity() {
+    private val topLevelRoutes: List<NavRoute> = listOf(NavRoute.Home, NavRoute.Calendar, NavRoute.Search)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        setEdgeToEdgeConfig()
         setContent {
-            MainScreen()
+            MainScreen(topLevelRoutes)
         }
     }
 }
 
 @Composable
-private fun MainScreen() {
-    BaseTheme {
+private fun MainScreen(topLevelRoute: List<NavRoute>) {
 
-        val appState = rememberAppState()
+    BaseTheme {
+        val topLevelBackStack = remember { TopLevelBackStack<Any>(NavRoute.Login) }
 
         Scaffold(
-            topBar = { AppTopBar(appState) },
+            topBar = { AppTopBar(topLevelBackStack) },
             bottomBar = {
-                if (shouldShowBottomBar(appState)) {
-                    BottomBarNav(navController = appState.navController)
+                if (topLevelBackStack.topLevelKey in topLevelRoute) {
+                    BottomBarNav(
+                        topLevelRoute = topLevelRoute,
+                        topLevelBackStack = topLevelBackStack
+                    )
                 }
             }
         ) { paddingValues ->
-            NavGraph(
-                contentPadding = paddingValues,
-                navController = appState.navController
-            )
+            NavGraph3(paddingValues, topLevelBackStack)
         }
     }
 }
 
 @Composable
-fun AppTopBar(appState: AppState) {
-    when (appState.currentRoute) {
-        NavRoute.Calendar.path -> CalendarTopBar()
+fun AppTopBar(topLevelBackStack: TopLevelBackStack<Any>) {
+    when (topLevelBackStack.backStack.lastOrNull()) {
+        NavRoute.Calendar -> CalendarTopBar()
         else -> Unit // Login, Splash, etc
     }
 }
 
-@Composable
-fun shouldShowBottomBar(appState: AppState): Boolean {
-    val destination = appState.currentDestination
+class TopLevelBackStack<T : Any>(startKey: T) {
 
-    return destination
-        ?.hierarchy
-        ?.any { it.route in listOf(
-            NavRoute.Home.path,
-            NavRoute.Calendar.path,
-            NavRoute.Search.path
-        ) } == true
+    // Maintain a stack for each top level route
+    private var topLevelStacks: LinkedHashMap<T, SnapshotStateList<T>> = linkedMapOf(
+        startKey to mutableStateListOf(startKey)
+    )
+
+    // Expose the current top level route for consumers
+    var topLevelKey by mutableStateOf(startKey)
+        private set
+
+    // Expose the back stack so it can be rendered by the NavDisplay
+    val backStack = mutableStateListOf(startKey)
+
+    private fun updateBackStack() {
+        backStack.apply {
+            clear()
+            addAll(topLevelStacks.flatMap { it.value })
+        }
+    }
+
+    fun addTopLevel(key: T) {
+
+        // If the top level doesn't exist, add it
+        if (topLevelStacks[key] == null) {
+            topLevelStacks[key] = mutableStateListOf(key)
+        } else {
+            // Otherwise just move it to the end of the stacks
+            topLevelStacks.apply {
+                remove(key)?.let {
+                    put(key, it)
+                }
+            }
+        }
+        topLevelKey = key
+        updateBackStack()
+    }
+
+    fun add(key: T) {
+        topLevelStacks[topLevelKey]?.add(key)
+        updateBackStack()
+    }
+
+    fun resetTo(key: T) {
+        topLevelStacks.clear()
+        topLevelStacks[key] = mutableStateListOf(key)
+        topLevelKey = key
+        updateBackStack()
+    }
+
+    fun removeLast() {
+        val removedKey = topLevelStacks[topLevelKey]?.removeLastOrNull()
+        // If the removed key was a top level key, remove the associated top level stack
+        topLevelStacks.remove(removedKey)
+        if (topLevelStacks.isNotEmpty()) {
+            topLevelKey = topLevelStacks.keys.last()
+        }
+        updateBackStack()
+    }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposeBaseTheme {
-        MainScreen()
+        MainScreen(
+            listOf(NavRoute.Home, NavRoute.Calendar, NavRoute.Profile)
+        )
     }
 }

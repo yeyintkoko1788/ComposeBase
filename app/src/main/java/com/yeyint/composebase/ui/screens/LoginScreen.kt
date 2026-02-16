@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.yeyint.composebase.ui.common.DefaultButton
+import com.yeyint.composebase.ui.common.PrimaryButton
 import com.yeyint.composebase.ui.theme.BasePreviewWrapper
 
 @Composable
@@ -22,7 +22,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Login Screen", fontSize = 40.sp)
 
-        DefaultButton(
+        PrimaryButton(
             text = "Log In",
             onClick = navigateToHome
         )
