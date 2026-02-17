@@ -2,7 +2,9 @@ package com.yeyint.composebase
 
 import android.app.Application
 import android.content.Context
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class BaseComposeApp : Application(){
 
     companion object {

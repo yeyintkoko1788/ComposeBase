@@ -32,6 +32,7 @@ import com.yeyint.composebase.ui.theme.neutral_text_invert_disable
 
 @Composable
 fun PrimaryButton(
+    modifier: Modifier = Modifier,
     text: String,
     enabled : Boolean = true,
     buttonColors : Color = MaterialTheme.colorScheme.primary ,
@@ -39,7 +40,7 @@ fun PrimaryButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         contentPadding = PaddingValues(vertical = 12.dp, horizontal = 8.dp),
@@ -63,13 +64,14 @@ fun PrimaryButton(
 
 @Composable
 fun SecondaryButton(
+    modifier: Modifier = Modifier,
     text: String,
     enabled : Boolean = true,
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .border(
                 width = 1.dp,

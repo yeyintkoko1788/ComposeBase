@@ -74,7 +74,7 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
-fun CalendarScreen(contentPadding: PaddingValues) {
+fun CalendarScreen() {
     val daysOfWeek = remember { daysOfWeek(DayOfWeek.SUNDAY) }
 
     val currentYear = YearMonth.now().year
@@ -102,7 +102,6 @@ fun CalendarScreen(contentPadding: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(contentPadding)
     ) {
 
 
@@ -255,9 +254,7 @@ private fun DefaultPreview() {
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            CalendarScreen(
-                contentPadding = PaddingValues()
-            )
+            CalendarScreen()
         }
     }
 }

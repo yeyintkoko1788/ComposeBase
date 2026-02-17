@@ -1,5 +1,6 @@
 package com.yeyint.composebase.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -9,12 +10,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yeyint.composebase.ui.viewmodel.SearchViewModel
 import com.yeyint.composebase.ui.common.PrimaryButton
+import com.yeyint.composebase.ui.navigation.NavRoute
 import com.yeyint.composebase.ui.theme.BasePreviewWrapper
 
 @Composable
 fun SearchScreen(
-    query: String?,
+    viewModel: SearchViewModel,
     popBackStack: () -> Unit,
     popUpToLogin: () -> Unit
 ) {
@@ -24,20 +27,22 @@ fun SearchScreen(
         Text("Search Screen", fontSize = 40.sp)
 
         Spacer(modifier = Modifier.height(5.dp))
-        Text("Query: $query", fontSize = 40.sp)
+        Text("Query: ${viewModel.navKey.query}", fontSize = 40.sp)
 
         PrimaryButton(
             text = "Back",
-            onClick = popBackStack
+            onClick = popBackStack,
+            modifier = Modifier.padding(8.dp)
         )
-
         PrimaryButton(
             text = "Log Out",
-            onClick = popUpToLogin
+            onClick = popUpToLogin,
+            modifier = Modifier.padding(8.dp)
         )
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
 private fun DefaultPreview() {
@@ -46,9 +51,11 @@ private fun DefaultPreview() {
             modifier = Modifier.fillMaxSize()
         ) {
             SearchScreen(
-                query = "liang moi",
                 popBackStack = {},
-                popUpToLogin = {}
+                popUpToLogin = {},
+                viewModel = SearchViewModel(
+                    NavRoute.Search("test")
+                )
             )
         }
     }

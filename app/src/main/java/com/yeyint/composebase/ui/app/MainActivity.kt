@@ -21,9 +21,11 @@ import com.yeyint.composebase.ui.screens.CalendarTopBar
 import com.yeyint.composebase.ui.setEdgeToEdgeConfig
 import com.yeyint.composebase.ui.theme.BaseTheme
 import com.yeyint.composebase.ui.theme.ComposeBaseTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val topLevelRoutes: List<NavRoute> = listOf(NavRoute.Home, NavRoute.Calendar, NavRoute.Search)
+    private val topLevelRoutes: List<NavRoute> = listOf(NavRoute.Home, NavRoute.Calendar, NavRoute.Profile)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

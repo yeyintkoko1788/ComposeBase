@@ -14,27 +14,23 @@ import com.yeyint.composebase.ui.theme.BasePreviewWrapper
 
 @Composable
 fun ProfileScreen(
-    id: Int,
-    showDetails: Boolean,
     popBackStack: () -> Unit,
     popUpToLogin: () -> Unit
 ) {
     Column (
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Profile Id: $id", fontSize = 40.sp)
-
-        Spacer(modifier = Modifier.height(5.dp))
-        Text("Details: $showDetails", fontSize = 40.sp)
+        Text("Hello User", fontSize = 40.sp)
 
         PrimaryButton(
             text = "Back",
-            onClick = popBackStack
+            onClick = popBackStack,
+            modifier = Modifier.padding(8.dp)
         )
-
         PrimaryButton(
             text = "Log Out",
-            onClick = popUpToLogin
+            onClick = popUpToLogin,
+            modifier = Modifier.padding(8.dp)
         )
     }
 }
@@ -47,8 +43,6 @@ private fun DefaultPreview() {
             modifier = Modifier.fillMaxSize()
         ) {
             ProfileScreen(
-                id = 7,
-                showDetails = true,
                 popBackStack = {},
                 popUpToLogin = {}
             )

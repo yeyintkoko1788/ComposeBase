@@ -95,11 +95,16 @@ dependencies {
     implementation(libs.compose.material.icons)
     implementation(libs.coil.compose)
     implementation(libs.lifecycle.viewmodel.compose)
+//    implementation(libs.koin.compose.viewmodel)
+//    implementation(libs.koin.navigation3)
+
     //nav2
     implementation(libs.android.navigation.compose)
     //nav3
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
     implementation(libs.kotlinx.serialization.json)
 
     debugImplementation(libs.github.chucker.debug)
@@ -131,7 +136,7 @@ dependencies {
     ksp(libs.hilt.compiler)
 //    implementation(libs.androidx.hilt.common)
 //    implementation (libs.androidx.hilt.work)
-//    implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
 
     implementation(libs.kizitonwose.calendar)
 }

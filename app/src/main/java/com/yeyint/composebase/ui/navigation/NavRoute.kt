@@ -1,9 +1,9 @@
 package com.yeyint.composebase.ui.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class NavRoute(val path: String,val icon: ImageVector? = null) {
@@ -14,32 +14,7 @@ sealed class NavRoute(val path: String,val icon: ImageVector? = null) {
 
     object Calendar : NavRoute("calendar",Icons.Default.CalendarMonth)
 
-    object Profile: NavRoute("profile") {
-        val id = "id"
-        val showDetails = "showDetails"
-    }
+    object Profile: NavRoute("profile",Icons.Default.AccountCircle)
 
-    object Search: NavRoute("search",Icons.Default.Search) {
-        val query = "query"
-    }
-
-    // build navigation path (for screen navigation)
-    fun withArgs(vararg args: String): String {
-        return buildString {
-            append(path)
-            args.forEach{ arg ->
-                append("/$arg")
-            }
-        }
-    }
-
-    // build and setup route format (in navigation graph)
-    fun withArgsFormat(vararg args: String) : String {
-        return buildString {
-            append(path)
-            args.forEach{ arg ->
-                append("/{$arg}")
-            }
-        }
-    }
+    data class Search(val query : String): NavRoute("search")
 }
