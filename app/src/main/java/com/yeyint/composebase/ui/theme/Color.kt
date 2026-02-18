@@ -30,8 +30,17 @@ val neutral_text_invert = Color(0xFFFFFFFF)
 val neutral_text_invert_disable = Color(0XB3FFFFFF)
 val neutral_text = Color(0xFF1C1C1C)
 val neutral_text_disable = Color(0X991C1C1C)
+
+val neutral_text_light = Color(0xFF8D8D8D)
 val neutral_border_dark = Color((0xFFC2C2C2))
 val neutral_border_dark_disable = Color((0x66E2E2E2))
+
+val neutral_border_light = Color((0xFFDBDBDB))
+
+val neutral_border_light_disable = Color((0x66DBDBDB))
+val brand_secondary_default = Color(0xFF864DF9)
+
+val semantic_error_default = Color(0xFFE6000F)
 
 val text_heading = n09
 val text_label = n05
