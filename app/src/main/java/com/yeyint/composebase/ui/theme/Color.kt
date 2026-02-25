@@ -42,6 +42,8 @@ val brand_secondary_default = Color(0xFF864DF9)
 
 val semantic_error_default = Color(0xFFE6000F)
 
+val neutral_border_disable = Color(0xFFCCCCCC)
+
 val text_heading = n09
 val text_label = n05
 val text_body = n06

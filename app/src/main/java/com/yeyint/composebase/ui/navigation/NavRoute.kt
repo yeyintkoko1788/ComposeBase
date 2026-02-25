@@ -10,6 +10,8 @@ sealed class NavRoute(val path: String,val icon: ImageVector? = null) {
 
     object Login: NavRoute("login")
 
+    object LanguageSheet : NavRoute("language_sheet")
+
     object Home: NavRoute("home",Icons.Default.Home)
 
     object Calendar : NavRoute("calendar",Icons.Default.CalendarMonth)

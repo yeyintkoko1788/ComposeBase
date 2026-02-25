@@ -34,4 +34,12 @@
     <string name="error_generic">Error occurred. Please try again.</string>
     <string name="error_server_404">No data found</string>
     <string name="error_server_500">Something went wrong!</string>
+
+    <string name="txt_employee_id_phone">Employee ID / Phone</string>
+    <string name="txt_6_digit_pin">6-Digit PIN</string>
+    <string name="txt_i_agree_to_attendio_s">"I agree to BaseApp's "</string>
+    <string name="txt_terms">Terms</string>
+    <string name="txt_and">" and "</string>
+    <string name="txt_privacy_policy">Privacy Policy</string>
+    <string name="txt_login">Log In</string>
 </resources>
