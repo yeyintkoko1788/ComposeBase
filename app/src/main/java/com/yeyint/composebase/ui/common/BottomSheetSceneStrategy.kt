@@ -4,6 +4,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.navigation3.runtime.NavEntry
@@ -24,15 +26,30 @@ internal class BottomSheetScene<T : Any>(
     override val overlaidEntries: List<NavEntry<T>>,
     private val entry: NavEntry<T>,
     private val modalBottomSheetProperties: ModalBottomSheetProperties,
+    private val skipPartiallyExpanded: Boolean,
+    private val dismissOnOutsideClick: Boolean,
     private val onBack: () -> Unit,
 ) : OverlayScene<T> {
 
     override val entries: List<NavEntry<T>> = listOf(entry)
 
     override val content: @Composable (() -> Unit) = {
+        val sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = skipPartiallyExpanded,
+            confirmValueChange = { newValue ->
+                if (!dismissOnOutsideClick && newValue == SheetValue.Hidden) {
+                    false
+                } else {
+                    true
+                }
+            }
+        )
         ModalBottomSheet(
             onDismissRequest = onBack,
-            properties = modalBottomSheetProperties,
+            sheetState = sheetState,
+            properties = ModalBottomSheetProperties(
+                shouldDismissOnBackPress = dismissOnOutsideClick && modalBottomSheetProperties.shouldDismissOnBackPress
+            ),
             containerColor = Color.White
         ) {
             entry.Content()
@@ -51,15 +68,21 @@ class BottomSheetSceneStrategy<T : Any> : SceneStrategy<T> {
 
     override fun SceneStrategyScope<T>.calculateScene(entries: List<NavEntry<T>>): Scene<T>? {
         val lastEntry = entries.lastOrNull()
-        val bottomSheetProperties = lastEntry?.metadata?.get(BOTTOM_SHEET_KEY) as? ModalBottomSheetProperties
-        return bottomSheetProperties?.let { properties ->
+        val metadata = lastEntry?.metadata
+        val bottomSheetProperties = metadata?.get(BOTTOM_SHEET_KEY) as? ModalBottomSheetProperties ?: ModalBottomSheetProperties()
+        val skipPartiallyExpanded = metadata?.get(SKIP_PARTIALLY_EXPANDED_KEY) as? Boolean ?: true
+        val dismissOnOutsideClick = metadata?.get(DISMISS_ON_OUTSIDE_CLICK_KEY) as? Boolean ?: true
+
+        return metadata?.get(BOTTOM_SHEET_KEY)?.let {
             @Suppress("UNCHECKED_CAST")
             BottomSheetScene(
                 key = lastEntry.contentKey as T,
                 previousEntries = entries.dropLast(1),
                 overlaidEntries = entries.dropLast(1),
                 entry = lastEntry,
-                modalBottomSheetProperties = properties,
+                modalBottomSheetProperties = bottomSheetProperties,
+                skipPartiallyExpanded = skipPartiallyExpanded,
+                dismissOnOutsideClick = dismissOnOutsideClick,
                 onBack = onBack,
             )
         }
@@ -70,14 +93,24 @@ class BottomSheetSceneStrategy<T : Any> : SceneStrategy<T> {
          * Function to be called on the [NavEntry.metadata] to mark this entry as something that
          * should be displayed within a [ModalBottomSheet].
          *
+         * @param skipPartiallyExpanded whether the bottom sheet should skip the partially expanded state.
+         * @param dismissOnOutsideClick whether the bottom sheet should dismiss when clicking outside.
          * @param modalBottomSheetProperties properties that should be passed to the containing
          * [ModalBottomSheet].
          */
         @OptIn(ExperimentalMaterial3Api::class)
         fun bottomSheet(
+            skipPartiallyExpanded: Boolean = true,
+            dismissOnOutsideClick: Boolean = true,
             modalBottomSheetProperties: ModalBottomSheetProperties = ModalBottomSheetProperties()
-        ): Map<String, Any> = mapOf(BOTTOM_SHEET_KEY to modalBottomSheetProperties)
+        ): Map<String, Any> = mapOf(
+            BOTTOM_SHEET_KEY to modalBottomSheetProperties,
+            SKIP_PARTIALLY_EXPANDED_KEY to skipPartiallyExpanded,
+            DISMISS_ON_OUTSIDE_CLICK_KEY to dismissOnOutsideClick
+        )
 
         internal const val BOTTOM_SHEET_KEY = "bottomsheet"
+        internal const val SKIP_PARTIALLY_EXPANDED_KEY = "skipPartiallyExpanded"
+        internal const val DISMISS_ON_OUTSIDE_CLICK_KEY = "dismissOnOutsideClick"
     }
 }

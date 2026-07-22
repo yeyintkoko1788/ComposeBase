@@ -1,5 +1,6 @@
 package com.yeyint.composebase.network.exception
 
+import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
 import kotlin.jvm.Throws
@@ -11,12 +12,13 @@ class NetworkExceptionInterceptor : Interceptor {
 
         val response = chain.proceed(chain.request())
 
-        when (response.isSuccessful) {
-            true  -> return response
+        return when (response.isSuccessful) {
+            true -> response
             false -> {
-                throw NetworkException(response.body , response.code)
+                val peeked = response.peekBody(Long.MAX_VALUE)
+                Log.e("NetworkError", "HTTP ${response.code}: ${peeked.string()}")
+                throw NetworkException(response.body, response.code)
             }
         }
-
     }
 }

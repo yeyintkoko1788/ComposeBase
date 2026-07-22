@@ -42,4 +42,7 @@
     <string name="txt_and">" and "</string>
     <string name="txt_privacy_policy">Privacy Policy</string>
     <string name="txt_login">Log In</string>
+
+    <string name="txt_retry">Retry</string>
+    <string name="txt_logout">Log Out</string>
 </resources>

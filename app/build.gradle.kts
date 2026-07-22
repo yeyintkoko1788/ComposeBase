@@ -4,6 +4,11 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.navigation.safeargs)
+    // Note: applied via the Kotlin Gradle plugin's own version (like One_Check does) rather
+    // than `libs.plugins.kotlin.serialization`, whose version.ref in the catalog points at the
+    // kotlinx-serialization *runtime library* version (1.7.0), not a valid compiler plugin
+    // version — using that alias would fail to resolve.
+    kotlin("plugin.serialization")
     alias(libs.plugins.ksp)
 }
 
@@ -99,6 +104,7 @@ dependencies {
     implementation(libs.compose.material.icons)
     implementation(libs.coil.compose)
     implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.security.crypto)
 //    implementation(libs.koin.compose.viewmodel)
 //    implementation(libs.koin.navigation3)
 

@@ -1,6 +1,7 @@
 package com.yeyint.composebase.di
 
 import androidx.annotation.NonNull
+import com.yeyint.composebase.network.components.AuthEventBus
 import com.yeyint.composebase.network.components.MyPreference
 import com.yeyint.composebase.network.components.TokenManager
 import com.yeyint.composebase.network.service.AuthenticationService
@@ -34,10 +35,11 @@ object ServiceModule {
         @Named("okhttp") httpClientBuilder: OkHttpClient.Builder,
         @Named("primary") retrofitBuilder: Retrofit.Builder,
         @Named("token_manager") tokenManager: TokenManager,
-        preference: MyPreference
+        preference: MyPreference,
+        authEventBus: AuthEventBus
     ): Retrofit.Builder {
         val interceptor: Interceptor =
-            AuthenticationInterceptor(tokenManager, preference)
+            AuthenticationInterceptor(tokenManager, preference, authEventBus)
         if (!httpClientBuilder.interceptors().contains(interceptor)) {
             httpClientBuilder.addInterceptor(interceptor)
         }

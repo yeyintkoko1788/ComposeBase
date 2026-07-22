@@ -2,6 +2,7 @@ package com.yeyint.composebase.ui.exception
 
 import android.content.Context
 import android.util.Log
+import com.joygroup.onecheck.domain.model.ErrorVO
 import com.yeyint.composebase.R
 import com.yeyint.composebase.domain.exception.GenericErrorMessageFactory
 import com.yeyint.composebase.domain.model.FlowReturnResult
@@ -34,10 +35,24 @@ class GenericErrorMessageFactoryImpl @Inject constructor(
         }
     }
 
-    override fun getErrorCodeAndMessage(throwable: Throwable): String {
-        return when(throwable) {
-            is NetworkException -> "${throwable.errorCode},${networkExceptionMessageFactory.getErrorMessage(throwable)}"
-            else -> "0,${getErrorMessage(throwable)}"
+    override fun getErrorCodeAndMessage(throwable: Throwable): ErrorVO {
+        return when (throwable) {
+            is NetworkException -> {
+                val message = networkExceptionMessageFactory.getErrorMessage(throwable).toString()
+                ErrorVO(
+                    code = throwable.errorCode.toString(),
+                    title = message,
+                    subtitle = message
+                )
+            }
+            else -> {
+                val message = getErrorMessage(throwable).toString()
+                ErrorVO(
+                    code = "0",
+                    title = message,
+                    subtitle = message
+                )
+            }
         }
     }
 
@@ -48,22 +63,22 @@ class GenericErrorMessageFactoryImpl @Inject constructor(
                 statusCode = 0,
                 success = false,
                 message = context.getString(R.string.error_no_internet_connection),
-                error = "",
-                title = ""
+                error = context.getString(R.string.error_no_internet_connection),
+                title = context.getString(R.string.error_no_internet_connection)
             )
             is SocketTimeoutException -> ErrorResponse(
                 statusCode = 0,
                 success = false,
                 message = context.getString(R.string.error_no_internet_connection),
-                error = "",
-                title = ""
+                error = context.getString(R.string.error_no_internet_connection),
+                title = context.getString(R.string.error_no_internet_connection)
             )
             is ConnectException -> ErrorResponse(
                 statusCode = 0,
                 success = false,
                 message = context.getString(R.string.error_no_internet_connection),
-                error = "",
-                title = ""
+                error = context.getString(R.string.error_no_internet_connection),
+                title = context.getString(R.string.error_no_internet_connection)
             )
             is IOException -> ErrorResponse(
                 statusCode = 0,

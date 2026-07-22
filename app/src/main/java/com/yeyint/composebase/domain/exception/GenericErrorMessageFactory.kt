@@ -1,5 +1,6 @@
 package com.yeyint.composebase.domain.exception
 
+import com.joygroup.onecheck.domain.model.ErrorVO
 import com.yeyint.composebase.domain.model.FlowReturnResult
 import com.yeyint.composebase.ui.exception.ErrorResponse
 
@@ -14,7 +15,7 @@ interface GenericErrorMessageFactory {
 
     fun <T> getLoginError(throwable: Throwable, defaultText: Int): FlowReturnResult<T>
 
-    fun getErrorCodeAndMessage(throwable: Throwable) : String
+    fun getErrorCodeAndMessage(throwable: Throwable) : ErrorVO
 
     fun getErrorResponse(throwable: Throwable) : ErrorResponse
 }

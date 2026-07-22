@@ -5,18 +5,36 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.ui.graphics.vector.ImageVector
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
-sealed class NavRoute(val path: String,val icon: ImageVector? = null) {
+/**
+ * [icon] and [title] are marked [Transient] — they carry UI-only values (an [ImageVector] isn't
+ * serializable, and display text shouldn't be baked into saved navigation state), so they're
+ * excluded from the generated serializer used to persist the back stack.
+ */
+@Serializable
+sealed class NavRoute(
+    @Transient val path: String = "",
+    @Transient val icon: ImageVector? = null,
+    @Transient val title: String? = null
+) {
 
-    object Login: NavRoute("login")
+    @Serializable
+    data object Login : NavRoute("login")
 
-    object LanguageSheet : NavRoute("language_sheet")
+    @Serializable
+    data object LanguageSheet : NavRoute("language_sheet")
 
-    object Home: NavRoute("home",Icons.Default.Home)
+    @Serializable
+    data object Home : NavRoute("home", Icons.Default.Home, "Home")
 
-    object Calendar : NavRoute("calendar",Icons.Default.CalendarMonth)
+    @Serializable
+    data object Calendar : NavRoute("calendar", Icons.Default.CalendarMonth, "Calendar")
 
-    object Profile: NavRoute("profile",Icons.Default.AccountCircle)
+    @Serializable
+    data object Profile : NavRoute("profile", Icons.Default.AccountCircle, "Profile")
 
-    data class Search(val query : String): NavRoute("search")
+    @Serializable
+    data class Search(val query: String) : NavRoute("search")
 }

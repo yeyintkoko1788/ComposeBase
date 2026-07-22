@@ -2,6 +2,13 @@
 
 package com.yeyint.composebase.ui.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,6 +47,38 @@ fun NavGraph3(contentPadding: PaddingValues, topLevelBackStack: TopLevelBackStac
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
         ),
+        // Bottom-tab switches (Home/Calendar/Profile) get a quick fade + scale-in; every other
+        // push/pop (e.g. Login -> Home, drilling into a detail screen) gets a horizontal slide.
+        transitionSpec = {
+            if (topLevelBackStack.isTabSwitching) {
+                fadeIn(
+                    animationSpec = tween(100, delayMillis = 80)
+                ) + scaleIn(
+                    initialScale = 0.92f, animationSpec = tween(100, delayMillis = 80)
+                ) togetherWith fadeOut(animationSpec = tween(120))
+            } else {
+                slideInHorizontally(
+                    initialOffsetX = { it }, animationSpec = tween(300)
+                ) togetherWith slideOutHorizontally(
+                    targetOffsetX = { -it }, animationSpec = tween(300)
+                )
+            }
+        },
+        popTransitionSpec = {
+            if (topLevelBackStack.isTabSwitching) {
+                fadeIn(
+                    animationSpec = tween(220, delayMillis = 80)
+                ) + scaleIn(
+                    initialScale = 0.92f, animationSpec = tween(220, delayMillis = 80)
+                ) togetherWith fadeOut(animationSpec = tween(120))
+            } else {
+                slideInHorizontally(
+                    initialOffsetX = { -it }, animationSpec = tween(300)
+                ) togetherWith slideOutHorizontally(
+                    targetOffsetX = { it }, animationSpec = tween(300)
+                )
+            }
+        },
         entryProvider = entryProvider {
             entry<NavRoute.Login> {
                 val viewModel: LoginViewModel = hiltViewModel()
@@ -74,7 +113,7 @@ fun NavGraph3(contentPadding: PaddingValues, topLevelBackStack: TopLevelBackStac
                         )
                     },
                     navigateToSearch = { query ->
-                        topLevelBackStack.addTopLevel(NavRoute.Search(query))
+                        topLevelBackStack.add(NavRoute.Search(query))
                     },
                     popBackStack = { topLevelBackStack.removeLast() },
                     popUpToLogin = {  topLevelBackStack.resetTo(NavRoute.Login) },

@@ -1,5 +1,7 @@
 package com.yeyint.composebase.ui.common
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yeyint.composebase.R
@@ -39,6 +42,7 @@ import com.yeyint.composebase.ui.theme.neutral_text
 import com.yeyint.composebase.ui.theme.neutral_text_disable
 import com.yeyint.composebase.ui.theme.neutral_text_light
 import com.yeyint.composebase.ui.theme.regularBodyMedium
+import com.yeyint.composebase.ui.theme.regularBodySmall
 
 @Composable
 fun DefaultEditText(
@@ -46,15 +50,30 @@ fun DefaultEditText(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
+    placeholder: String? = null,
     isError: Boolean = false,
     errorMessage: String? = null,
     enabled: Boolean = true,
     isPasswordField: Boolean = false,
+    readOnly: Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    singleLine: Boolean = true,
+    minLines: Int = 1,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    showCounter: Boolean = false,
+    maxLength: Int = Int.MAX_VALUE
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+
+    val labelStyle = if (isFocused || value.isNotEmpty()) {
+        MaterialTheme.typography.regularBodySmall
+    } else {
+        MaterialTheme.typography.regularBodyMedium
+    }
 
     val finalVisualTransformation = when {
         isPasswordField && !passwordVisible -> PasswordVisualTransformation()
@@ -62,7 +81,10 @@ fun DefaultEditText(
         else -> visualTransformation
     }
 
-    val finalKeyboardOptions = if (isPasswordField) {
+    val finalKeyboardOptions = if (keyboardOptions.keyboardType != KeyboardOptions.Default.keyboardType) {
+        // A caller-specified keyboard type (e.g. NumberPassword) always wins.
+        keyboardOptions
+    } else if (isPasswordField) {
         KeyboardOptions(keyboardType = KeyboardType.Password)
     } else {
         keyboardOptions
@@ -92,22 +114,56 @@ fun DefaultEditText(
     Column(modifier = modifier) {
         OutlinedTextField(
             value = value,
-            onValueChange = onValueChange,
+            onValueChange = { newValue ->
+                val sanitized = if (singleLine) {
+                    // Strip newlines — some IMEs inject \n on Enter even for single-line fields.
+                    newValue.replace("\n", "")
+                } else {
+                    newValue
+                }
+                if (sanitized.length <= maxLength) {
+                    onValueChange(sanitized)
+                }
+            },
             modifier = Modifier.fillMaxWidth(),
+            interactionSource = interactionSource,
             label = {
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.regularBodyMedium,
+                    style = labelStyle,
                     color = neutral_text_light
                 )
             },
+            placeholder = placeholder?.let {
+                {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.regularBodyMedium,
+                        color = neutral_text_light
+                    )
+                }
+            },
+            supportingText = if (showCounter && !(isError && errorMessage != null)) {
+                {
+                    Text(
+                        text = "${value.length} / $maxLength",
+                        style = MaterialTheme.typography.regularBodySmall,
+                        color = neutral_text_light,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                }
+            } else null,
             isError = isError,
             enabled = enabled,
+            readOnly = readOnly,
             shape = RoundedCornerShape(16.dp),
             trailingIcon = finalTrailingIcon,
             keyboardOptions = finalKeyboardOptions,
             visualTransformation = finalVisualTransformation,
-            singleLine = true,
+            singleLine = singleLine,
+            minLines = minLines,
+            maxLines = maxLines,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = neutral_border_light,

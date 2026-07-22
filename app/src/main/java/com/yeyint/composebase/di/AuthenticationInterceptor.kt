@@ -1,5 +1,6 @@
 package com.yeyint.composebase.di
 
+import com.yeyint.composebase.network.components.AuthEventBus
 import com.yeyint.composebase.network.components.MyPreference
 import com.yeyint.composebase.network.components.TokenManager
 import com.yeyint.composebase.network.showLogD
@@ -13,7 +14,8 @@ import java.io.IOException
 
 class AuthenticationInterceptor(
     private val tokenManager: TokenManager,
-    private val preference: MyPreference
+    private val preference: MyPreference,
+    private val authEventBus: AuthEventBus
 ) : Interceptor {
 
 
@@ -43,20 +45,26 @@ class AuthenticationInterceptor(
         val response = chain.proceed(request)
         if (response.code == 401) {
             // Token expired, refresh it
-            response.close()
-            //var secondResponse : Response? = null
             synchronized(this) {
                 val newToken: String? = tokenManager.refreshTokenSync()
                 if (newToken != null) {
-                    // Retry the request with the new token
+                    // Only close after we have a new token and are about to retry
+                    response.close()
                     showLogD("AUTH_INSPECTOR", newToken)
                     val newRequest: Request = originalRequest.newBuilder()
                         .header("Authorization", "Bearer $newToken")
                         .build()
-                    //showLogI("AUTH_INSPECTOR", "2st ${secondResponse!!.code}")
                     val secondResponse = chain.proceed(newRequest)
-                    showLogI("AUTH_INSPECTOR", "3rd ${secondResponse.code}")
+                    showLogI("AUTH_INSPECTOR", "retried ${secondResponse.code}")
+                    if (secondResponse.code == 401 || secondResponse.code == 403) {
+                        authEventBus.emitSessionExpired()
+                    }
                     return secondResponse
+                } else {
+                    // Refresh failed — session is over. Let the caller observe AuthEventBus
+                    // and route back to login; return the original response as-is so
+                    // interceptors above can still read its body without crashing.
+                    authEventBus.emitSessionExpired()
                 }
             }
         }
