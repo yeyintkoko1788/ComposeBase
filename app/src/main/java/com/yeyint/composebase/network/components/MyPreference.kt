@@ -10,6 +10,12 @@ import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 import javax.inject.Inject
 
+/**
+ * Plain (unencrypted) SharedPreferences for user settings and cached display data.
+ *
+ * Credentials must NOT be stored here — access token, refresh token and the `x-location-token`
+ * secret live in [SecurePreference], which is backed by EncryptedSharedPreferences.
+ */
 class MyPreference @Inject constructor(private val context : Context){
     private val PREFERENCES_NAME = "MyCommPreference"
 
@@ -20,9 +26,11 @@ class MyPreference @Inject constructor(private val context : Context){
         sharedPreferences.edit().clear().apply()
     }
 
+    /**
+     * Clears the non-sensitive session keys only. Tokens live in [SecurePreference] — call
+     * `TokenManager.logout()` to clear both halves.
+     */
     fun logout(){
-        sharedPreferences.edit().remove(context.getString(KEYS.ACCESS_TOKEN.label)).apply()
-        sharedPreferences.edit().remove(context.getString(KEYS.REFRESH_TOKEN.label)).apply()
         sharedPreferences.edit().remove(context.getString(KEYS.USER_ID.label)).apply()
     }
 
@@ -101,9 +109,8 @@ class MyPreference @Inject constructor(private val context : Context){
     }
 
     enum class KEYS(val label : Int , val defaultValue : String) {
-        ACCESS_TOKEN(R.string.pref_access_token, ""),
-        REFRESH_TOKEN(R.string.pref_refresh_token, ""),
-        SECRET_HEADER_KEY(R.string.pref_secret_header_key, ""),
+        // ACCESS_TOKEN, REFRESH_TOKEN and SECRET_HEADER_KEY intentionally removed — see
+        // SecurePreference. Keeping them out of this enum makes plaintext storage unreachable.
         USER_ID(R.string.pref_user_id, ""),
         SPLASH_SCREEN_PHOTO(R.string.pref_splash_screen_photo, ""),
         ONBOARDING_SCREEN_PHOTO(R.string.pref_onboarding_screen_photo, ""),

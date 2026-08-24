@@ -2,6 +2,7 @@ package com.yeyint.composebase.di
 
 import com.yeyint.composebase.network.components.AuthEventBus
 import com.yeyint.composebase.network.components.MyPreference
+import com.yeyint.composebase.network.components.SecurePreference
 import com.yeyint.composebase.network.components.TokenManager
 import com.yeyint.composebase.network.showLogD
 import com.yeyint.composebase.network.showLogI
@@ -15,14 +16,16 @@ import java.io.IOException
 class AuthenticationInterceptor(
     private val tokenManager: TokenManager,
     private val preference: MyPreference,
+    private val securePreference: SecurePreference,
     private val authEventBus: AuthEventBus
 ) : Interceptor {
 
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val bearerToken: String = preference.load(MyPreference.KEYS.ACCESS_TOKEN) ?: ""
-        val secretHeaderKey : String = preference.load(MyPreference.KEYS.SECRET_HEADER_KEY) ?: ""
+        // Credentials come from encrypted storage; only non-sensitive settings stay in MyPreference.
+        val bearerToken: String = securePreference.accessToken
+        val secretHeaderKey: String = securePreference.secretHeaderKey
         val systemLang = preference.load(MyPreference.KEYS.LOCALE)
         val language = when(systemLang){
             LOCALE_MM -> "my"
@@ -35,10 +38,8 @@ class AuthenticationInterceptor(
         builder.addHeader("Accept", "application/json")
         builder.addHeader("Accept-Language", language)
         builder.addHeader("x-location-token", secretHeaderKey)
-        showLogI("Bearer $bearerToken")
-
-        showLogI("x-location-token $secretHeaderKey")
-        if (bearerToken != null && bearerToken != "")
+        // Tokens are never logged — logcat is readable by other tooling on a connected device.
+        if (bearerToken.isNotEmpty())
             builder.addHeader("Authorization", "Bearer $bearerToken")
 
         val request = builder.build()
@@ -50,7 +51,7 @@ class AuthenticationInterceptor(
                 if (newToken != null) {
                     // Only close after we have a new token and are about to retry
                     response.close()
-                    showLogD("AUTH_INSPECTOR", newToken)
+                    showLogD("AUTH_INSPECTOR", "token refreshed")
                     val newRequest: Request = originalRequest.newBuilder()
                         .header("Authorization", "Bearer $newToken")
                         .build()

@@ -7,7 +7,8 @@
 -->
 <full-backup-content>
     <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
+        Credentials must never leave the device via auto-backup. The file name matches
+        SecurePreference.FILE_NAME; keep the two in sync.
+    -->
+    <exclude domain="sharedpref" path="secure_compose_base_prefs.xml"/>
 </full-backup-content>

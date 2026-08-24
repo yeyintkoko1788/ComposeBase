@@ -1,18 +1,26 @@
 package com.yeyint.composebase.network.components
 
-import android.util.Log
 import com.yeyint.composebase.network.service.AuthenticationService
 import javax.inject.Inject
 
 class TokenManager @Inject constructor(
     private val authService: AuthenticationService,
+    private val securePreference: SecurePreference,
     private val prefs: MyPreference
 ) {
 
     fun saveToken(token: String) {
-        prefs.save(MyPreference.KEYS.ACCESS_TOKEN, token)
-        Log.d("token.use", token)
-        //prefs.save(MyPreference.KEYS.REFRESH_TOKEN, refreshToken)
+        securePreference.accessToken = token
+    }
+
+    fun saveRefreshToken(token: String) {
+        securePreference.refreshToken = token
+    }
+
+    /** Clears credentials from encrypted storage and the non-sensitive session keys alongside it. */
+    fun logout() {
+        securePreference.clearTokens()
+        prefs.logout()
     }
 
     fun refreshTokenSync(): String? {
@@ -20,8 +28,12 @@ class TokenManager @Inject constructor(
             val response = authService.refreshTokenApiCall().execute()
             if (response.isSuccessful && response.body() != null) {
                 val newToken: String = response.body()?.body?.data?.accessToken ?: ""
-                saveToken(newToken)
-                newToken
+                if (newToken.isEmpty()) {
+                    null
+                } else {
+                    saveToken(newToken)
+                    newToken
+                }
             } else {
                 null
             }

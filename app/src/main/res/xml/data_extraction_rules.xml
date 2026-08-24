@@ -4,16 +4,16 @@
    for details.
 -->
 <data-extraction-rules>
-    <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
-    </cloud-backup>
     <!--
-    <device-transfer>
-        <include .../>
-        <exclude .../>
-    </device-transfer>
+        The encrypted prefs file is excluded from both paths. Its master key lives in the
+        hardware keystore and does not transfer, so a restored copy would be undecryptable
+        anyway — and cloud-backing credentials is undesirable regardless.
+        File name matches SecurePreference.FILE_NAME; keep the two in sync.
     -->
+    <cloud-backup>
+        <exclude domain="sharedpref" path="secure_compose_base_prefs.xml"/>
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" path="secure_compose_base_prefs.xml"/>
+    </device-transfer>
 </data-extraction-rules>

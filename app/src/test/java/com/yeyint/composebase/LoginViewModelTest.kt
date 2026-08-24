@@ -1,8 +1,11 @@
 package com.yeyint.composebase
 
 import app.cash.turbine.test
+import com.yeyint.composebase.domain.exception.GenericErrorMessageFactory
+import com.yeyint.composebase.network.components.MyPreference
 import com.yeyint.composebase.ui.viewmodel.login.LoginUiState
 import com.yeyint.composebase.ui.viewmodel.login.LoginViewModel
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
@@ -17,16 +20,25 @@ class LoginViewModelTest {
 
     private lateinit var viewModel: LoginViewModel
 
+    /**
+     * The base-class dependencies aren't exercised by the login stub, so relaxed mocks are enough
+     * here. Swap them for real fakes once [LoginViewModel] starts using them for error mapping.
+     */
+    private fun createViewModel() = LoginViewModel(
+        flowGenericErrorMessageFactory = mockk<GenericErrorMessageFactory>(relaxed = true),
+        myPreference = mockk<MyPreference>(relaxed = true)
+    )
+
     @Before
     fun setup() {
-        viewModel = LoginViewModel()
+        viewModel = createViewModel()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `login with valid email emits Loading then Success`() = runTest {
 
-        val viewModel = LoginViewModel()
+        val viewModel = createViewModel()
 
         viewModel.login("admin@gmail.com", "123456")
 
@@ -51,7 +63,7 @@ class LoginViewModelTest {
     @Test
     fun `login with error email emits Loading then Error`() = runTest {
 
-        val viewModel = LoginViewModel()
+        val viewModel = createViewModel()
 
         viewModel.login("errorEmail@gmail.com", "123456")
 

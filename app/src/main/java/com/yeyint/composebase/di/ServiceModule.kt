@@ -3,6 +3,7 @@ package com.yeyint.composebase.di
 import androidx.annotation.NonNull
 import com.yeyint.composebase.network.components.AuthEventBus
 import com.yeyint.composebase.network.components.MyPreference
+import com.yeyint.composebase.network.components.SecurePreference
 import com.yeyint.composebase.network.components.TokenManager
 import com.yeyint.composebase.network.service.AuthenticationService
 import dagger.Module
@@ -36,10 +37,11 @@ object ServiceModule {
         @Named("primary") retrofitBuilder: Retrofit.Builder,
         @Named("token_manager") tokenManager: TokenManager,
         preference: MyPreference,
+        securePreference: SecurePreference,
         authEventBus: AuthEventBus
     ): Retrofit.Builder {
         val interceptor: Interceptor =
-            AuthenticationInterceptor(tokenManager, preference, authEventBus)
+            AuthenticationInterceptor(tokenManager, preference, securePreference, authEventBus)
         if (!httpClientBuilder.interceptors().contains(interceptor)) {
             httpClientBuilder.addInterceptor(interceptor)
         }
@@ -53,10 +55,10 @@ object ServiceModule {
     fun getRefreshTokenBuilder(
         @Named("authOkhttp") httpClientBuilder: OkHttpClient.Builder,
         @Named("auth") retrofitBuilder: Retrofit.Builder,
-        preference: MyPreference
+        securePreference: SecurePreference
     ): Retrofit.Builder {
         val interceptor: Interceptor =
-            RefreshTokenInterceptor(preference)
+            RefreshTokenInterceptor(securePreference)
         if (!httpClientBuilder.interceptors().contains(interceptor)) {
             httpClientBuilder.addInterceptor(interceptor)
         }

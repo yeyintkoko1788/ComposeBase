@@ -74,6 +74,9 @@ androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecy
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
 github-chucker-debug = {module ="com.github.chuckerteam.chucker:library", version.ref = "chucker" }
+# No-op stub with the same API surface. Required because ChuckerInterceptor is referenced from
+# the main source set (NetworkModule), so the release variant needs the classes on its classpath.
+github-chucker-no-op = {module ="com.github.chuckerteam.chucker:library-no-op", version.ref = "chucker" }
 
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }

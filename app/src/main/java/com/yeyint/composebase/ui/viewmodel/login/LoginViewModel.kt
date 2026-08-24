@@ -3,6 +3,8 @@ package com.yeyint.composebase.ui.viewmodel.login
 import androidx.lifecycle.viewModelScope
 import com.joygroup.onecheck.domain.model.ErrorVO
 import com.joygroup.onecheck.domain.model.UserVO
+import com.yeyint.composebase.domain.exception.GenericErrorMessageFactory
+import com.yeyint.composebase.network.components.MyPreference
 import com.yeyint.composebase.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -13,7 +15,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor() : BaseViewModel(), LoginContract {
+class LoginViewModel @Inject constructor(
+    flowGenericErrorMessageFactory: GenericErrorMessageFactory,
+    myPreference: MyPreference
+) : BaseViewModel(flowGenericErrorMessageFactory, myPreference), LoginContract {
     private var _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
     override val loginUiState: StateFlow<LoginUiState> = _loginUiState.asStateFlow()
 

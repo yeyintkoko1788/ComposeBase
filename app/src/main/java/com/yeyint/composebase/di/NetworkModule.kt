@@ -1,8 +1,8 @@
 package com.yeyint.composebase.di
 
 import android.content.Context
-import com.airbnb.lottie.compose.BuildConfig
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.yeyint.composebase.BuildConfig
 import com.yeyint.composebase.network.components.MyPreference
 import com.yeyint.composebase.network.exception.NetworkExceptionInterceptor
 import com.google.gson.FieldNamingPolicy
@@ -31,10 +31,9 @@ object NetworkModule {
     fun providesSharePrefUtils(context: Context) =
         MyPreference(context)
 
-    @Provides
-    @Named("bearer_token")
-    fun providesBearerToken(sharePrefUtils: MyPreference) =
-        sharePrefUtils.load(MyPreference.KEYS.ACCESS_TOKEN)
+    // A @Provides for the bearer token was removed here: it captured the token value at the point
+    // of injection, so any consumer would hold a stale copy after a refresh. Read it on demand
+    // from SecurePreference instead (see AuthenticationInterceptor).
 
     @Suppress("DEPRECATION")
     @Provides

@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">Compose Base</string>
 
-    <string name="pref_access_token" translatable="false">AccessToken</string>
-    <string name="pref_refresh_token" translatable="false">RefreshToken</string>
-    <string name="pref_secret_header_key" translatable="false">SecretHeaderKey</string>
+    <!-- Token pref keys removed: credentials now live in SecurePreference, keyed by plain
+         string constants inside that class rather than by string resource. -->
     <string name="pref_user_id" translatable="false">UserID</string>
     <string name="pref_is_admin" translatable="false">IsAdmin</string>
     <string name="pref_is_guest" translatable="false">IsGuest</string>

@@ -118,6 +118,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     debugImplementation(libs.github.chucker.debug)
+    releaseImplementation(libs.github.chucker.no.op)
 
     //retrofit
     implementation(libs.gson)
