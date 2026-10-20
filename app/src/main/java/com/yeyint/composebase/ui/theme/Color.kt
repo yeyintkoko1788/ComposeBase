@@ -92,3 +92,26 @@ val text_dark = n08
 val text_light = n05
 val text_fix_white = n01
 val text_primary = Purple40
+
+// Semantic tokens — what the shared components in ui/common are written against, so a new app
+// re-skins them by remapping these, not by editing each component. Mapped onto the palette above.
+val surface_brand = brand_primary_default
+val surface_default = n011
+val surface_bg = n02
+val surface_error = error_default
+val surface_success = success_default
+val surface_warning_light = Color(0xFFFEEDE6)
+val neutral_surface = n01
+val text_default = neutral_text
+val text_error = semantic_error_default
+val text_inverted = neutral_text_invert
+val text_success = green_text
+val stroke_error = semantic_error_default
+val stroke_success = success_default
+val stroke_lighter = neutral_border_light
+val stroke_color = n03
+val icon_brand = brand_primary_default
+val icon_light = neutral_text_light
+val icon_default = neutral_text
+val icon_success = success_default
+val disabled_button = Color(0x4D9CA1AA)

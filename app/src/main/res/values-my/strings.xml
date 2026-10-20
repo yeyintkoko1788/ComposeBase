@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Compose Base</string>
+
+    <string name="error_no_internet_connection">အင်တာနက်ချိတ်ဆက်မှုမရှိပါ!</string>
+    <string name="error_generic">အမှားတစ်ခုဖြစ်ပွားခဲ့သည်။ ထပ်စမ်းကြည့်ပါ။</string>
+    <string name="error_server_404">အချက်အလက်မတွေ့ပါ</string>
+    <string name="error_server_500">တစ်ခုခု မှားယွင်းသွားပါသည်!</string>
+
+    <string name="txt_employee_id_phone">ဝန်ထမ်း ID / ဖုန်းနံပါတ်</string>
+    <string name="txt_6_digit_pin">ဂဏန်း ၆ လုံး PIN</string>
+    <!-- The three legal-line segments below are concatenated by LoginScreen, so word order is fixed
+         to English's. Burmese puts the verb ("agree") last, which that assembly can't express — the
+         line therefore reads "BaseApp's Terms and Privacy Policy". For real copy, replace the
+         concatenation with one string and an annotated placeholder per link. -->
+    <string name="txt_i_agree_to_attendio_s">"BaseApp ၏ "</string>
+    <string name="txt_terms">စည်းကမ်းချက်များ</string>
+    <string name="txt_and">" နှင့် "</string>
+    <string name="txt_privacy_policy">ကိုယ်ရေးကိုယ်တာ မူဝါဒ</string>
+    <string name="txt_login">ဝင်ရန်</string>
+
+    <string name="txt_retry">ထပ်စမ်းရန်</string>
+    <string name="txt_logout">အကောင့် ထွက်မည်</string>
+    <string name="cd_empty">ဗလာ</string>
+    <string name="txt_back">နောက်သို့</string>
+
+    <string name="language_picker_title">ဘာသာစကား</string>
+    <string name="profile_greeting">မင်္ဂလာပါ</string>
+    <!-- Shared UI components (ported from the rider app) -->
+    <string name="action_loading">တင်နေသည်…</string>
+    <string name="action_apply">သုံးရန်</string>
+    <string name="action_cancel">မလုပ်တော့ပါ</string>
+    <string name="action_clear">ရှင်းလင်းရန်</string>
+    <string name="cd_back">နောက်သို့</string>
+    <string name="cd_search">ရှာဖွေရန်</string>
+    <string name="cd_next_month">နောက်လ</string>
+    <string name="cd_previous_month">ယခင်လ</string>
+    <string name="date_range_picker_title">ရက်စွဲအပိုင်းအခြား ရွေးချယ်ပါ</string>
+    <string name="date_range_picker_start">စတင်ရက်</string>
+    <string name="date_range_picker_end">ပြီးဆုံးရက်</string>
+    <string name="date_today">ယနေ့</string>
+    <string name="date_yesterday">မနေ့က</string>
+    <string name="media_counter">%1$d/ %2$d</string>
+    <string name="option_search_placeholder">ရှာဖွေရန်</string>
+    <string name="option_search_no_results">ရလဒ် မတွေ့ပါ</string>
+    <string name="photo_source_take_photo">ဓာတ်ပုံရိုက်ရန်</string>
+    <string name="photo_source_choose_from_gallery">ဓာတ်ပုံစာအုပ်မှရွေးရန်</string>
+    <string name="cd_hide_password">စကားဝှက်ဖျောက်ရန်</string>
+    <string name="cd_show_password">စကားဝှက်ပြရန်</string>
+    <string name="cd_error">အမှား</string>
+    <string name="cd_clear_text">ရှင်းလင်းရန်</string>
+</resources>

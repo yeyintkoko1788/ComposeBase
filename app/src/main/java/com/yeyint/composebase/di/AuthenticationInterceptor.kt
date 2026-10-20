@@ -6,7 +6,7 @@ import com.yeyint.composebase.network.components.SecurePreference
 import com.yeyint.composebase.network.components.TokenManager
 import com.yeyint.composebase.network.showLogD
 import com.yeyint.composebase.network.showLogI
-import com.yeyint.composebase.uitls.LOCALE_EN
+import com.yeyint.composebase.uitls.LOCALE_CN
 import com.yeyint.composebase.uitls.LOCALE_MM
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -29,8 +29,8 @@ class AuthenticationInterceptor(
         val systemLang = preference.load(MyPreference.KEYS.LOCALE)
         val language = when(systemLang){
             LOCALE_MM -> "my"
-            LOCALE_EN -> "en"
-            else -> "zh"
+            LOCALE_CN -> "zh"
+            else -> "en"
         }
         //val builder = chain.request().newBuilder()
         val originalRequest = chain.request()

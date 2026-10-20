@@ -1,6 +1,6 @@
 package com.yeyint.composebase.domain.exception
 
-import com.joygroup.onecheck.domain.model.ErrorVO
+import com.yeyint.composebase.domain.model.ErrorVO
 import com.yeyint.composebase.domain.model.FlowReturnResult
 import com.yeyint.composebase.ui.exception.ErrorResponse
 

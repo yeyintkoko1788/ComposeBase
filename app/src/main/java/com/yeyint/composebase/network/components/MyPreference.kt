@@ -3,7 +3,6 @@ package com.yeyint.composebase.network.components
 import android.content.Context
 import android.content.SharedPreferences
 import com.yeyint.composebase.R
-import com.yeyint.composebase.network.showLogE
 import com.yeyint.composebase.uitls.LOCALE_EN
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -84,12 +83,10 @@ class MyPreference @Inject constructor(private val context : Context){
 
     fun save(key : KEYAS, value : ArrayList<String>){
         // creating a new variable for gson.
-        showLogE("beforeJson:$value")
         val gson = Gson()
 
         // getting data from gson and storing it in a string.
         val json : String = gson.toJson(value)
-        showLogE("saveJson:$json")
         sharedPreferences.edit().putString(context.getString(key.label),json).apply()
     }
 
@@ -100,7 +97,6 @@ class MyPreference @Inject constructor(private val context : Context){
         // below line is to get to string present from our
         // shared prefs if not present setting it as null.
         val json = sharedPreferences.getString(context.getString(key.label) , key.defaultValue)
-        showLogE("jsonString:$json")
 
         // below line is to get the type of our array list.
         val type : Type = object : TypeToken<ArrayList<String?>?>() {}.type

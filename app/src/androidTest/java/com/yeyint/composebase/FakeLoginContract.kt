@@ -1,7 +1,7 @@
 package com.yeyint.composebase
 
-import com.joygroup.onecheck.domain.model.ErrorVO
-import com.joygroup.onecheck.domain.model.UserVO
+import com.yeyint.composebase.domain.model.ErrorVO
+import com.yeyint.composebase.domain.model.UserVO
 import com.yeyint.composebase.ui.viewmodel.login.LoginContract
 import com.yeyint.composebase.ui.viewmodel.login.LoginUiState
 import kotlinx.coroutines.flow.MutableStateFlow

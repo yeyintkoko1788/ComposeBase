@@ -1,11 +1,14 @@
 package com.yeyint.composebase.ui.app
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -16,22 +19,49 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.yeyint.composebase.ui.navigation.BottomBarNav
 import com.yeyint.composebase.ui.navigation.NavGraph3
+import com.yeyint.composebase.ui.locale.AppLanguageProvider
+import com.yeyint.composebase.ui.locale.LanguageController
+import com.yeyint.composebase.ui.locale.LanguageManager
+import com.yeyint.composebase.ui.locale.LocalLanguage
+import com.yeyint.composebase.ui.locale.readSavedLanguage
+import com.yeyint.composebase.ui.locale.withAppLanguage
 import com.yeyint.composebase.ui.navigation.NavRoute
 import com.yeyint.composebase.ui.screens.CalendarTopBar
 import com.yeyint.composebase.ui.setEdgeToEdgeConfig
 import com.yeyint.composebase.ui.theme.BaseTheme
 import com.yeyint.composebase.ui.theme.ComposeBaseTheme
+import com.yeyint.composebase.uitls.LOCALE_EN
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var languageManager: LanguageManager
+
     private val topLevelRoutes: List<NavRoute> = listOf(NavRoute.Home, NavRoute.Calendar, NavRoute.Profile)
+
+    /**
+     * Runs before Hilt field injection, so the saved language is read straight from preferences
+     * rather than through [languageManager]. This covers non-Compose surfaces (Toasts, system
+     * dialogs); Compose itself is re-scoped by [AppLanguageProvider] below.
+     */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(newBase.withAppLanguage(readSavedLanguage(newBase)))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setEdgeToEdgeConfig()
         setContent {
-            MainScreen(topLevelRoutes)
+            val language by languageManager.language.collectAsState()
+            AppLanguageProvider(
+                languageCode = language,
+                onSelect = languageManager::setLanguage
+            ) {
+                MainScreen(topLevelRoutes)
+            }
         }
     }
 }
@@ -183,9 +213,11 @@ class TopLevelBackStack<T : Any>(initialStartKey: T) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    ComposeBaseTheme {
-        MainScreen(
-            listOf(NavRoute.Home, NavRoute.Calendar, NavRoute.Profile)
-        )
+    CompositionLocalProvider(LocalLanguage provides LanguageController(LOCALE_EN) {}) {
+        ComposeBaseTheme {
+            MainScreen(
+                listOf(NavRoute.Home, NavRoute.Calendar, NavRoute.Profile)
+            )
+        }
     }
 }

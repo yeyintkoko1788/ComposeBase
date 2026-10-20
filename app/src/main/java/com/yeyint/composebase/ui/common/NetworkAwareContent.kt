@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.joygroup.onecheck.domain.model.ErrorVO
+import com.yeyint.composebase.domain.model.ErrorVO
 import com.yeyint.composebase.ui.theme.BasePreviewWrapper
 
 /**

@@ -11,7 +11,11 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
+import com.yeyint.composebase.ui.locale.LanguageController
+import com.yeyint.composebase.ui.locale.LocalLanguage
+import com.yeyint.composebase.uitls.LOCALE_EN
 
 private val DarkColorScheme = darkColorScheme(
     primary = brand_primary_default,
@@ -76,10 +80,17 @@ fun BaseTheme(
 fun BasePreviewWrapper(
     content: @Composable BoxWithConstraintsScope.() -> Unit,
 ) {
-    BaseTheme {
-        Surface {
-            BoxWithConstraints {
-                content()
+    // LocalLanguage is provided OUTSIDE BaseTheme on purpose: anything in the theme that reads it
+    // (e.g. a language-dependent typography scale) is evaluated as an argument to MaterialTheme,
+    // one level above BaseTheme's content lambda — nested inside, it would run with nothing
+    // provided and every preview would crash with "LocalLanguage not provided". The real app
+    // never hits this because MainActivity wraps everything in AppLanguageProvider first.
+    CompositionLocalProvider(LocalLanguage provides LanguageController(LOCALE_EN) {}) {
+        BaseTheme {
+            Surface {
+                BoxWithConstraints {
+                    content()
+                }
             }
         }
     }

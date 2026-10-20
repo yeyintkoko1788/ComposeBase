@@ -24,19 +24,47 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.yeyint.composebase.R
+import com.yeyint.composebase.ui.locale.LocalLanguage
 import com.yeyint.composebase.ui.theme.BasePreviewWrapper
-import com.yeyint.composebase.ui.theme.brand_primary_default
-import com.yeyint.composebase.ui.theme.brand_primary_disable
+import com.yeyint.composebase.ui.theme.surface_brand
+import com.yeyint.composebase.ui.theme.disabled_button
+import com.yeyint.composebase.ui.theme.surface_error
+import com.yeyint.composebase.ui.theme.error_disable
 import com.yeyint.composebase.ui.theme.mediumBodyLarge
-import com.yeyint.composebase.ui.theme.n011
-import com.yeyint.composebase.ui.theme.neutral_border_dark
+import com.yeyint.composebase.ui.theme.surface_default
+import com.yeyint.composebase.ui.theme.stroke_lighter
 import com.yeyint.composebase.ui.theme.neutral_border_dark_disable
-import com.yeyint.composebase.ui.theme.neutral_text
-import com.yeyint.composebase.ui.theme.neutral_text_disable
-import com.yeyint.composebase.ui.theme.neutral_text_invert
+import com.yeyint.composebase.ui.theme.text_default
+import com.yeyint.composebase.ui.theme.text_light
+import com.yeyint.composebase.ui.theme.text_inverted
+import com.yeyint.composebase.uitls.LOCALE_MM
 import com.yeyint.composebase.ui.theme.neutral_text_invert_disable
+import com.yeyint.composebase.ui.theme.semiboldBodyMedium
+
+/**
+ * Label style shared by every button here. Two button-only adjustments on top of the theme style:
+ * - No fixed line height — the theme styles carry one sized for body text, which adds spacing a
+ *   single-line button label doesn't want (and lets the font's own metrics decide instead).
+ * - 2sp smaller in Myanmar, on top of the global trim [appTypography] already applies to every
+ *   style there: Myanmar glyphs run large, and a button has far less room to absorb that than
+ *   body text does.
+ */
+@Composable
+private fun TextStyle.asButtonLabel(): TextStyle {
+    val isMyanmar = LocalLanguage.current.code == LOCALE_MM
+    return copy(
+        fontSize = if (isMyanmar) (fontSize.value - 2f).sp else fontSize,
+        lineHeight = TextUnit.Unspecified
+    )
+}
 
 @Composable
 fun PrimaryButton(
@@ -50,20 +78,20 @@ fun PrimaryButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(8.dp),
         contentPadding = PaddingValues(vertical = 12.dp, horizontal = 8.dp),
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonColors,
             disabledContentColor = neutral_text_invert_disable,
-            disabledContainerColor = brand_primary_disable
+            disabledContainerColor = disabled_button
         )
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.mediumBodyLarge,
+            style = MaterialTheme.typography.semiboldBodyMedium.asButtonLabel(),
             color = when (enabled) {
-                true -> neutral_text_invert
+                true -> text_inverted
                 false -> neutral_text_invert_disable
             }
         )
@@ -78,7 +106,7 @@ fun PrimaryButton(
 fun LoadingButton(
     modifier: Modifier = Modifier,
     text: String,
-    loadingText: String = "Loading...",
+    loadingText: String = stringResource(R.string.action_loading),
     isLoading: Boolean = false,
     enabled: Boolean = true,
     iconRes: Int? = null,
@@ -88,13 +116,13 @@ fun LoadingButton(
     Button(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(8.dp),
         contentPadding = contentPadding,
         enabled = enabled && !isLoading,
         colors = ButtonDefaults.buttonColors(
-            containerColor = brand_primary_default,
-            disabledContainerColor = brand_primary_disable,
-            contentColor = neutral_text_invert,
+            containerColor = surface_brand,
+            disabledContainerColor = disabled_button,
+            contentColor = text_inverted,
             disabledContentColor = neutral_text_invert_disable
         )
     ) {
@@ -105,13 +133,15 @@ fun LoadingButton(
             if (isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(20.dp),
-                    color = neutral_text_invert,
+                    color = text_inverted,
                     strokeWidth = 2.dp
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = loadingText,
-                    style = MaterialTheme.typography.mediumBodyLarge,
+                    style = MaterialTheme.typography.semiboldBodyMedium.asButtonLabel(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     color = neutral_text_invert_disable
                 )
             } else {
@@ -120,14 +150,16 @@ fun LoadingButton(
                         painter = painterResource(id = iconRes),
                         contentDescription = null,
                         modifier = Modifier.size(20.dp),
-                        tint = if (enabled) neutral_text_invert else neutral_text_invert_disable
+                        tint = if (enabled) text_inverted else neutral_text_invert_disable
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                 }
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.mediumBodyLarge,
-                    color = if (enabled) neutral_text_invert else neutral_text_invert_disable
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.mediumBodyLarge.asButtonLabel(),
+                    color = if (enabled) text_inverted else neutral_text_invert_disable
                 )
             }
         }
@@ -148,27 +180,80 @@ fun SecondaryButton(
             .border(
                 width = 1.dp,
                 color = when (enabled) {
-                    true -> neutral_border_dark
+                    true -> stroke_lighter
                     false -> neutral_border_dark_disable
                 },
-                shape = RoundedCornerShape(16.dp)),
+                shape = RoundedCornerShape(8.dp)),
         shape = RoundedCornerShape(16.dp),
         contentPadding = PaddingValues(vertical = 12.dp, horizontal = 8.dp),
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
-            containerColor = n011,
-            disabledContentColor = neutral_text_disable,
-            disabledContainerColor = n011
+            containerColor = surface_default,
+            disabledContentColor = text_light,
+            disabledContainerColor = surface_default
         )
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.mediumBodyLarge,
+            style = MaterialTheme.typography.semiboldBodyMedium.asButtonLabel(),
             color = when (enabled) {
-                true -> neutral_text
-                false -> neutral_text_disable
+                true -> text_default
+                false -> text_light
             }
         )
+    }
+}
+
+/**
+ * Solid red rather than the brand color — for actions like "Delete Account" that shouldn't read
+ * as encouraged. [isLoading] swaps the label for a spinner + [loadingText], same as [LoadingButton].
+ */
+@Composable
+fun DestructiveButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    loadingText: String = stringResource(R.string.action_loading),
+    isLoading: Boolean = false,
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(8.dp),
+        contentPadding = PaddingValues(vertical = 12.dp, horizontal = 8.dp),
+        enabled = enabled && !isLoading,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = surface_error,
+            disabledContainerColor = error_disable,
+            contentColor = text_inverted,
+            disabledContentColor = neutral_text_invert_disable
+        )
+    ) {
+        if (isLoading) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = text_inverted,
+                    strokeWidth = 2.dp
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = loadingText,
+                    style = MaterialTheme.typography.mediumBodyLarge.asButtonLabel(),
+                    color = neutral_text_invert_disable
+                )
+            }
+        } else {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.mediumBodyLarge.asButtonLabel(),
+                color = if (enabled) text_inverted else neutral_text_invert_disable
+            )
+        }
     }
 }
 

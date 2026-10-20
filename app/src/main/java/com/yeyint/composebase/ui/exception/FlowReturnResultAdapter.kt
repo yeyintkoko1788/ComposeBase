@@ -1,5 +1,6 @@
 package com.yeyint.composebase.ui.exception
 
+import com.yeyint.composebase.network.logSwallowed
 import com.yeyint.composebase.domain.model.FlowReturnResult
 import com.google.gson.TypeAdapter
 import com.google.gson.Gson
@@ -32,6 +33,7 @@ class FlowReturnResultAdapter : TypeAdapter<FlowReturnResult<*>>() {
                 else -> throw JsonSyntaxException("Unknown FlowReturnResult type")
             }
         } catch (e: Exception) {
+            logSwallowed("FlowReturnResultAdapter: could not adapt response, returning null", e)
             null
         }
     }

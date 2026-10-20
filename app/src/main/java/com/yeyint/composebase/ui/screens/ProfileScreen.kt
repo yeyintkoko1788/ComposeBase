@@ -9,6 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.yeyint.composebase.R
+import com.yeyint.composebase.ui.common.LanguagePicker
 import com.yeyint.composebase.ui.common.PrimaryButton
 import com.yeyint.composebase.ui.theme.BasePreviewWrapper
 import androidx.compose.animation.core.Spring
@@ -60,15 +63,18 @@ fun ProfileScreen(
     Column (
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Hello User", fontSize = 40.sp)
+        Text(stringResource(R.string.profile_greeting), fontSize = 40.sp)
+
+        // Localisation sample: switches the whole app's language instantly, no restart.
+        LanguagePicker(modifier = Modifier.padding(8.dp))
 
         PrimaryButton(
-            text = "Back",
+            text = stringResource(R.string.txt_back),
             onClick = popBackStack,
             modifier = Modifier.padding(8.dp)
         )
         PrimaryButton(
-            text = "Log Out",
+            text = stringResource(R.string.txt_logout),
             onClick = popUpToLogin,
             modifier = Modifier.padding(8.dp)
         )

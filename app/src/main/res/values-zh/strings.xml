@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Compose Base</string>
+
+    <string name="error_no_internet_connection">没有网络连接，请检查网络后再试。</string>
+    <string name="error_generic">操作失败，请稍后再试。</string>
+    <string name="error_server_404">未找到相关内容。</string>
+    <string name="error_server_500">服务器出现问题，请稍后再试。</string>
+
+    <string name="txt_employee_id_phone">员工编号 / 手机号</string>
+    <string name="txt_6_digit_pin">6 位 PIN 码</string>
+    <string name="txt_i_agree_to_attendio_s">我同意 BaseApp 的</string>
+    <string name="txt_terms">条款</string>
+    <string name="txt_and">和</string>
+    <string name="txt_privacy_policy">隐私政策</string>
+    <string name="txt_login">登录</string>
+
+    <string name="txt_retry">重试</string>
+    <string name="txt_logout">退出登录</string>
+    <string name="cd_empty">空</string>
+    <string name="txt_back">返回</string>
+
+    <string name="language_picker_title">语言</string>
+    <string name="profile_greeting">你好，用户</string>
+    <!-- Shared UI components (ported from the rider app) -->
+    <string name="action_loading">加载中…</string>
+    <string name="action_apply">应用</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_clear">清除</string>
+    <string name="cd_back">返回</string>
+    <string name="cd_search">搜索</string>
+    <string name="cd_next_month">下个月</string>
+    <string name="cd_previous_month">上个月</string>
+    <string name="date_range_picker_title">选择日期范围</string>
+    <string name="date_range_picker_start">开始</string>
+    <string name="date_range_picker_end">结束</string>
+    <string name="date_today">今天</string>
+    <string name="date_yesterday">昨天</string>
+    <string name="media_counter">%1$d/ %2$d</string>
+    <string name="option_search_placeholder">搜索</string>
+    <string name="option_search_no_results">未找到结果</string>
+    <string name="photo_source_take_photo">拍照</string>
+    <string name="photo_source_choose_from_gallery">从相册选择</string>
+    <string name="cd_hide_password">隐藏密码</string>
+    <string name="cd_show_password">显示密码</string>
+    <string name="cd_error">错误</string>
+    <string name="cd_clear_text">清除</string>
+</resources>

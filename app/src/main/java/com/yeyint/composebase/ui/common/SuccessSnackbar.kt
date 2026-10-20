@@ -24,7 +24,15 @@ import androidx.compose.ui.unit.sp
 import com.yeyint.composebase.ui.theme.BasePreviewWrapper
 import kotlinx.coroutines.delay
 
-/** A short-lived success toast that auto-dismisses after [durationMillis]. */
+/**
+ * A short-lived success toast that auto-dismisses after [durationMillis].
+ *
+ * **Placement:** these are plain composables, not a `SnackbarHost` — they occupy layout space
+ * wherever they are placed. Render them as a child of a `Box` with
+ * `Modifier.align(Alignment.BottomCenter)` so they float over the content. Dropping one into a
+ * `Column` between a list and a composer/footer makes that footer visibly jump down while the
+ * snackbar is showing and back up when it dismisses.
+ */
 @Composable
 fun SuccessSnackbar(
     message: String,

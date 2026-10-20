@@ -44,4 +44,37 @@
 
     <string name="txt_retry">Retry</string>
     <string name="txt_logout">Log Out</string>
+    <string name="cd_empty">Empty</string>
+    <string name="txt_back">Back</string>
+
+    <!-- Localisation sample (see docs/LOCALIZATION.md). Language names are written in their own
+         script and shown that way in every locale, so they are not translatable. -->
+    <string name="language_en" translatable="false">English</string>
+    <string name="language_my" translatable="false">မြန်မာ</string>
+    <string name="language_zh" translatable="false">中文</string>
+    <string name="language_picker_title">Language</string>
+    <string name="profile_greeting">Hello User</string>
+    <!-- Shared UI components (ported from the rider app) -->
+    <string name="action_loading">Loading…</string>
+    <string name="action_apply">Apply</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_clear">Clear</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_search">Search</string>
+    <string name="cd_next_month">Next month</string>
+    <string name="cd_previous_month">Previous month</string>
+    <string name="date_range_picker_title">Select Date Range</string>
+    <string name="date_range_picker_start">Start</string>
+    <string name="date_range_picker_end">End</string>
+    <string name="date_today">Today</string>
+    <string name="date_yesterday">Yesterday</string>
+    <string name="media_counter">%1$d/ %2$d</string>
+    <string name="option_search_placeholder">Search</string>
+    <string name="option_search_no_results">No results found</string>
+    <string name="photo_source_take_photo">Take Photo</string>
+    <string name="photo_source_choose_from_gallery">Choose from Gallery</string>
+    <string name="cd_hide_password">Hide password</string>
+    <string name="cd_show_password">Show password</string>
+    <string name="cd_error">Error</string>
+    <string name="cd_clear_text">Clear</string>
 </resources>

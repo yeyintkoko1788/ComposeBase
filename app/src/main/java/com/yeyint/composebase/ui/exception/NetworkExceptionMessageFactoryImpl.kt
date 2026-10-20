@@ -1,5 +1,6 @@
 package com.yeyint.composebase.ui.exception
 
+import com.yeyint.composebase.network.logSwallowed
 import android.content.Context
 import com.yeyint.composebase.R
 import com.yeyint.composebase.fromJson
@@ -55,6 +56,7 @@ class NetworkExceptionMessageFactoryImpl @Inject constructor(
                 try {
                     errorBody.string()
                 } catch (e: Exception) {
+                    logSwallowed("NetworkExceptionMessageFactory: error body unreadable", e)
                     "Error occurred at parsing error body string"
                 }
             }

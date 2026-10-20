@@ -1,8 +1,9 @@
 package com.yeyint.composebase.ui.viewmodel.login
 
+import com.yeyint.composebase.network.logSwallowed
 import androidx.lifecycle.viewModelScope
-import com.joygroup.onecheck.domain.model.ErrorVO
-import com.joygroup.onecheck.domain.model.UserVO
+import com.yeyint.composebase.domain.model.ErrorVO
+import com.yeyint.composebase.domain.model.UserVO
 import com.yeyint.composebase.domain.exception.GenericErrorMessageFactory
 import com.yeyint.composebase.network.components.MyPreference
 import com.yeyint.composebase.ui.base.BaseViewModel
@@ -45,6 +46,9 @@ class LoginViewModel @Inject constructor(
                     _loginUiState.value = LoginUiState.Success(user)
                 }
             } catch (e: Exception) {
+                // Demo stub: every failure, including a network error, becomes this canned "404".
+                // Log the real cause so it is not mistaken for a missing page.
+                logSwallowed("LoginViewModel: login failed", e)
                 _loginUiState.value = LoginUiState.Error(
                     ErrorVO(
                         code = "404",

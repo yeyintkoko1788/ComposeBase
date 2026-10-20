@@ -3,7 +3,6 @@ package com.yeyint.composebase.ui.base
 import androidx.lifecycle.ViewModel
 import com.yeyint.composebase.domain.exception.GenericErrorMessageFactory
 import com.yeyint.composebase.network.components.MyPreference
-import io.reactivex.disposables.CompositeDisposable
 
 /**
  * Shared base for feature ViewModels.
@@ -17,11 +16,4 @@ abstract class BaseViewModel(
     protected val flowGenericErrorMessageFactory: GenericErrorMessageFactory,
     protected val myPreference: MyPreference
 ) : ViewModel() {
-
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
-    }
 }

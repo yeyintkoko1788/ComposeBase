@@ -1,4 +1,4 @@
-package com.joygroup.onecheck.domain.model
+package com.yeyint.composebase.domain.model
 
 data class ErrorVO(
     val code : String,

@@ -1,8 +1,10 @@
 package com.yeyint.composebase.ui.exception
 
+import com.yeyint.composebase.network.logSwallowed
 import android.content.Context
-import android.util.Log
-import com.joygroup.onecheck.domain.model.ErrorVO
+import com.yeyint.composebase.network.showLogD
+import com.yeyint.composebase.network.showLogE
+import com.yeyint.composebase.domain.model.ErrorVO
 import com.yeyint.composebase.R
 import com.yeyint.composebase.domain.exception.GenericErrorMessageFactory
 import com.yeyint.composebase.domain.model.FlowReturnResult
@@ -109,6 +111,7 @@ class GenericErrorMessageFactoryImpl @Inject constructor(
                 return try {
                     context.getString(defaultText)
                 } catch (e: Exception) {
+                    logSwallowed("GenericErrorMessageFactory: falling back to a generic message", e)
                     throwable.message ?: context.getString(R.string.error_generic)
                 }
             }
@@ -153,7 +156,7 @@ class GenericErrorMessageFactoryImpl @Inject constructor(
 //        val errorBody = try {
 //            networkException.errorBody?.string()
 //        } catch (e: Exception) {
-//            Log.e("ErrorBodyRead", "Error reading error body: ${e.message}")
+//            showLogE("ErrorBodyRead", "Error reading error body: ${e.message}")
 //            null
 //        }
         return when (networkException.errorCode) {
@@ -176,11 +179,11 @@ class GenericErrorMessageFactoryImpl @Inject constructor(
     }
 
     private fun parseErrorResponse(errorBody: String?): ErrorResponse {
-        Log.d("ErrorBody", errorBody ?: "Error body is null")
+        showLogD("ErrorBody", errorBody ?: "Error body is null")
 
         return try {
             val jsonObject = JSONObject(errorBody ?: "{}")
-            Log.d("ParsedJSONObject", jsonObject.toString())
+            showLogD("ParsedJSONObject", jsonObject.toString())
 
             val statusCode = jsonObject.optInt("statusCode", 0)
             val success = jsonObject.optBoolean("success", false)
@@ -188,7 +191,7 @@ class GenericErrorMessageFactoryImpl @Inject constructor(
             val error = jsonObject.optString("error", "")
             val title = jsonObject.optString("title", "")
 
-            Log.d(
+            showLogD(
                 "ParsedFields",
                 "statusCode: $statusCode, success: $success, message: $message, error: $error, title: $title"
             )
@@ -200,21 +203,21 @@ class GenericErrorMessageFactoryImpl @Inject constructor(
                 error = error,
                 title = title
             )
-            Log.d("ParsedError", "ErrorResponse: $errorResponse")
+            showLogD("ParsedError", "ErrorResponse: $errorResponse")
 
             errorResponse
         } catch (e: JSONException) {
-            Log.e("JSONError", "Error parsing error body: ${e.message}")
+            showLogE("JSONError", "Error parsing error body: ${e.message}")
             ErrorResponse() // Default empty error response
         }
     }
 
     private fun parse4011ErrorResponse(errorBody: String?): ErrorResponse {
-        Log.d("ErrorBody", errorBody ?: "Error body is null")
+        showLogD("ErrorBody", errorBody ?: "Error body is null")
 
         return try {
             val jsonObject = JSONObject(errorBody ?: "{}")
-            Log.d("ParsedJSONObject", jsonObject.toString())
+            showLogD("ParsedJSONObject", jsonObject.toString())
 
             val statusCode = jsonObject.optInt("statusCode", 0)
             val success = jsonObject.optBoolean("success", false)
@@ -222,7 +225,7 @@ class GenericErrorMessageFactoryImpl @Inject constructor(
             val error = jsonObject.optString("error", "")
             val title = jsonObject.optString("title", "")
 
-            Log.d(
+            showLogD(
                 "ParsedFields",
                 "statusCode: $statusCode, success: $success, message: $message, error: $error, title: $title"
             )
@@ -234,11 +237,11 @@ class GenericErrorMessageFactoryImpl @Inject constructor(
                 error = error,
                 title = title
             )
-            Log.d("ParsedError", "ErrorResponse: $errorResponse")
+            showLogD("ParsedError", "ErrorResponse: $errorResponse")
 
             errorResponse
         } catch (e: JSONException) {
-            Log.e("JSONError", "Error parsing error body: ${e.message}")
+            showLogE("JSONError", "Error parsing error body: ${e.message}")
             ErrorResponse() // Default empty error response
         }
     }

@@ -1,5 +1,6 @@
 package com.yeyint.composebase
 
+import com.yeyint.composebase.network.logSwallowed
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -247,8 +248,8 @@ fun convertLocalTimeToUtcString(localTime: Time?): String? {
         // Format the time in UTC
         utcFormat.format(utcCalendar.time)
     } catch (e: Exception) {
+        logSwallowed("convertLocalTimeToUtcString", e)
         // Handle any exceptions
-        e.printStackTrace()
         null
     }
 }
@@ -275,6 +276,7 @@ fun convertUtcToLocal(serverDate: String?): String {
             // Format the date to the desired format
             desiredDateFormat.format(date!!)
         } catch (e: Exception) {
+            logSwallowed("convertUtcToLocal", e)
             ""
         }
     }
@@ -294,6 +296,7 @@ fun convertToLocalTime(serverDate: String): String {
         // Format the date to the desired format
         desiredDateFormat.format(date!!)
     } catch (e: Exception) {
+        logSwallowed("convertToLocalTime", e)
         ""
     }
 }
@@ -344,6 +347,7 @@ fun formatDate(serverDate: String): String {
             // Format the date to the desired format
             desiredDateFormat.format(date!!)
         } catch (e: Exception) {
+            logSwallowed("formatDate", e)
             ""
         }
     }
@@ -382,6 +386,7 @@ fun formatSearchDateMonthDay(serverDate: String): String {
         monthDayFormat.timeZone = userTimeZone
         monthDayFormat.format(parsedDate!!)
     } catch (e: Exception) {
+        logSwallowed("formatSearchDateMonthDay", e)
         "Invalid date format"
     }
 }
@@ -393,7 +398,7 @@ fun getThumbnailFromVideoUrl(videoUrl: String): Bitmap? {
         retriever.setDataSource(videoUrl, HashMap()) // Set the data source
         retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST) // Get frame at time 0ms
     } catch (e: Exception) {
-        e.printStackTrace()
+        logSwallowed("getThumbnailFromVideoUrl", e)
         null
     } finally {
         retriever.release() // Release the retriever
@@ -440,6 +445,7 @@ fun formatDateMonthDayYear(serverDate: String): String {
             date.format(previousYearFormat) // Format with year
         }
     } catch (e: Exception) {
+        logSwallowed("formatDateMonthDayYear", e)
         "Invalid Date" // Handle parsing errors
     }
 }
@@ -454,6 +460,7 @@ fun formatBlock(serverDate: String): String {
         val date = ZonedDateTime.parse(serverDate, serverDateFormat)
         date.format(fullFormat) // Format with time and full date
     } catch (e: Exception) {
+        logSwallowed("formatBlock", e)
         "Invalid Date" // Handle parsing errors
     }
 }
@@ -468,7 +475,7 @@ fun String.toReadableDate(): String {
         val outputFormat = SimpleDateFormat("dd MMM, hh:mm a", Locale.ENGLISH)
         outputFormat.format(date ?: "")
     } catch (e: Exception) {
-        e.printStackTrace()
+        logSwallowed("toReadableDate", e)
         this
     }
 }
@@ -536,13 +543,6 @@ fun formatTime(date: Date): String {
 fun formatDate(date: Date): String {
     val dateFormat = SimpleDateFormat("MMM dd", Locale.US)
     return dateFormat.format(date)
-}
-
-fun Fragment.setAppLocale(locale: Locale) {
-    Locale.setDefault(locale)
-    val config = resources.configuration
-    config.setLocale(locale)
-    resources.updateConfiguration(config, resources.displayMetrics)
 }
 
 
@@ -696,7 +696,7 @@ fun generateThumbnailFromVideo(videoUrl: String): String {
         return "data:image/png;base64,$base64Image"
 
     } catch (e: Exception) {
-        e.printStackTrace()
+        logSwallowed("generateThumbnailFromVideo", e)
     } finally {
         retriever.release()
     }

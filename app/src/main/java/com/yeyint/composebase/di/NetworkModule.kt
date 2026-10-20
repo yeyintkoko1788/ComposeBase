@@ -15,9 +15,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
@@ -35,7 +33,6 @@ object NetworkModule {
     // of injection, so any consumer would hold a stale copy after a refresh. Read it on demand
     // from SecurePreference instead (see AuthenticationInterceptor).
 
-    @Suppress("DEPRECATION")
     @Provides
     @Named("primary")
     fun providesPrimaryRetrofitBuilder(
@@ -45,11 +42,8 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(SimpleXmlConverterFactory.create())
     }
 
-    @Suppress("DEPRECATION")
     @Provides
     @Named("auth")
     fun providesAuthRetrofitBuilder(
@@ -59,8 +53,6 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(SimpleXmlConverterFactory.create())
     }
 
     @Module

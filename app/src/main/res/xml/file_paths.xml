@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Paths the FileProvider may hand out URIs for. Camera captures are written to the app's cache
+    directory: they are temporary by nature, and the OS can reclaim them if storage runs short.
+-->
+<paths>
+    <cache-path
+        name="captures"
+        path="captures/" />
+</paths>

@@ -1,5 +1,6 @@
 package com.yeyint.composebase.network.components
 
+import com.yeyint.composebase.network.logSwallowed
 import com.yeyint.composebase.network.service.AuthenticationService
 import javax.inject.Inject
 
@@ -38,6 +39,9 @@ class TokenManager @Inject constructor(
                 null
             }
         } catch (e: Exception) {
+            // A failed refresh reads downstream as "no token" and ends the session — without this
+            // line that is indistinguishable from the user simply being signed out.
+            logSwallowed("TokenManager: token call failed, returning null", e)
             null
         }
     }

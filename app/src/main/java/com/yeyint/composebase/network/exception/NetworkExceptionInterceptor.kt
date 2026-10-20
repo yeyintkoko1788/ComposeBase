@@ -1,6 +1,7 @@
 package com.yeyint.composebase.network.exception
 
-import android.util.Log
+import com.yeyint.composebase.BuildConfig
+import com.yeyint.composebase.network.showLogE
 import okhttp3.Interceptor
 import okhttp3.Response
 import kotlin.jvm.Throws
@@ -15,8 +16,11 @@ class NetworkExceptionInterceptor : Interceptor {
         return when (response.isSuccessful) {
             true -> response
             false -> {
-                val peeked = response.peekBody(Long.MAX_VALUE)
-                Log.e("NetworkError", "HTTP ${response.code}: ${peeked.string()}")
+                // Guarded here, not just inside showLogE: peekBody(...).string() copies the whole
+                // error body into memory, and arguments are evaluated before the logger's own gate.
+                if (BuildConfig.DEBUG) {
+                    showLogE("NetworkError", "HTTP ${response.code}: ${response.peekBody(Long.MAX_VALUE).string()}")
+                }
                 throw NetworkException(response.body, response.code)
             }
         }
