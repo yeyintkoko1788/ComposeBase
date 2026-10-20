@@ -30,10 +30,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -67,6 +70,9 @@ fun DefaultEditText(
     errorMessage: String? = null,
     enabled: Boolean = true,
     isPasswordField: Boolean = false,
+    // Tells autofill services what the field takes, so saved credentials are offered and a
+    // "save password?" prompt can appear. A password field defaults to [ContentType.Password].
+    autofillType: ContentType? = null,
     readOnly: Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -152,7 +158,13 @@ fun DefaultEditText(
                         }
                         if (sanitized.length <= maxLength) onValueChange(sanitized)
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .then(
+                            (autofillType ?: ContentType.Password.takeIf { isPasswordField })
+                                ?.let { type -> Modifier.semantics { contentType = type } }
+                                ?: Modifier
+                        ),
                     enabled = enabled,
                     readOnly = readOnly,
                     interactionSource = interactionSource,

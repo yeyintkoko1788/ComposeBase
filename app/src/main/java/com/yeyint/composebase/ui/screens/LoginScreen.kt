@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -139,7 +140,8 @@ fun LoginScreen(
             DefaultEditText(
                 value = employeeId,
                 onValueChange = { employeeId = it },
-                label = stringResource(R.string.txt_employee_id_phone)
+                label = stringResource(R.string.txt_employee_id_phone),
+                autofillType = ContentType.Username
             )
 
             Spacer(modifier = Modifier.height(16.dp))
