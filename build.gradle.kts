@@ -6,5 +6,5 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.navigation.safeargs) apply false
     alias(libs.plugins.ksp) apply false
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("plugin.serialization") version "2.2.21"
 }

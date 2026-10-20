@@ -31,6 +31,8 @@ plumbing is required, so the picker also works on pre-login screens.
 5. `di/AuthenticationInterceptor.kt` — map the new code to its `Accept-Language` value.
 6. If the language needs digits/fonts handled specially, that decision belongs in
    `withAppLanguage()` — the single place the app's locale is decided.
+7. `scripts/export_locale_strings.py` — add a row to `LANGUAGES` so the translators' spreadsheet gets
+   the new column.
 
 ## Add a string
 
@@ -39,6 +41,22 @@ Add it to `values/`, `values-my/` and `values-zh/` in the same change. `Localiza
 format-argument mismatch (`%1$s` in one locale but not another is a runtime crash) — it discovers
 `values-*` folders itself, so a new language is covered automatically. Pure-data keys (`pref_*`,
 language names) are `translatable="false"` and excluded.
+
+## Send strings to translators
+
+```bash
+pip install openpyxl                                              # once
+python3 scripts/export_locale_strings.py --out strings.xlsx       # everything
+python3 scripts/export_locale_strings.py --out new.xlsx --since strings.xlsx   # only what was added since
+```
+
+One row per string (plurals as `name[quantity]`), with the placeholders listed and a **Missing**
+column naming any language still empty. The script exits non-zero if a translation's format
+arguments differ from the English — the same crash `LocalizationParityTest` guards against.
+
+Put strings you add under a dated comment at the bottom of `strings.xml`
+(`<!-- New strings (2026-10-19) -->`) in all three locales. Translators send back edits to a handful
+of rows; with the new ones grouped at the end, those edits are found without searching the file.
 
 ## Gotchas
 

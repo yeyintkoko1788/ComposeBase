@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "DEV" label for the staging launcher icon. Drawn on the adaptive icon's 108dp canvas inside the
+     central 72dp safe zone, so no launcher mask (circle, squircle, teardrop) can clip it. The
+     letters are stroked paths rather than text: a vector drawable has no font. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#E65100"
+        android:pathData="M35,67H73Q75,67 75,69V79Q75,81 73,81H35Q33,81 33,79V69Q33,67 35,67Z" />
+    <!-- D -->
+    <path
+        android:pathData="M44,70.5H46C48.4,70.5 49.5,72 49.5,74C49.5,76 48.4,77.5 46,77.5H44Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineJoin="round" />
+    <!-- E -->
+    <path
+        android:pathData="M57,70.5H52V77.5H57M52,74H56"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <!-- V -->
+    <path
+        android:pathData="M59.5,70.5L62.25,77.5L65,70.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

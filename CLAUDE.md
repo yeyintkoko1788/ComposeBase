@@ -90,6 +90,21 @@ These are all real failures from the sibling projects, in rough order of how lon
   field but no constructor slot, and KSP fails with *"Cannot find setter for property"* — reported
   against the wrong line, often the end of the file. `val x get() = ...` is fine: no backing field.
 - **`@OptIn` cannot annotate an `init` block.** Move the code into a private function.
+- **The `kotlin("plugin.serialization")` version in the root `build.gradle.kts` must equal the Kotlin
+  version.** It was pinned to 1.9.22 against Kotlin 2.2.21 and still built — serialization breaks
+  later, at runtime. It is a different artifact from the `kotlinx-serialization` *library* version in
+  the catalog, so the catalog alias can't be reused for it.
+- **Hilt 2.59+ requires AGP 9**, and bumping Hilt alone fails at configuration time. The
+  `android.builtInKotlin=false` / `android.newDsl=false` (and related) lines in `gradle.properties`
+  are deliberate AGP 9 opt-outs, each deprecated and gone in AGP 10 — migrate on purpose, don't
+  delete them to silence the warnings.
+- **Each flavor needs its own `google-services.json`** in `app/src/<flavor>/`, from a Firebase app
+  registered with that flavor's *application ID*. A missing file fails only that flavor's build; a
+  file whose package doesn't match fails with "no matching client". Give each environment its own
+  application ID (`applicationIdSuffix`) so both install side by side and keep separate push tokens.
+- **Work started from a ViewModel on a Nav3 entry dies with that entry.** A screen popped the moment
+  its call succeeds cancels its own `viewModelScope` — so "refetch after submit" launched there never
+  finishes. Do it from the entry that stays, or from a singleton.
 
 ### Network
 
@@ -110,6 +125,13 @@ These are all real failures from the sibling projects, in rough order of how lon
 - **Server-computed fields are authoritative.** e.g. `isOpen` — the server knows the business's
   timezone and holiday overrides; a client deriving it from the device clock disagrees with what
   customers see.
+- **A "no longer available" answer is a domain state, not an error banner.** Map it once (a typed
+  check on `NetworkException.errorCode`, e.g. 409 on accept *and* on the fetch that precedes it) and
+  show the dedicated sheet; scattering `errorCode == 409` across ViewModels guarantees one path is
+  missed.
+- **Maintenance arrives as an HTTP status on any call**, so it is detected in
+  `NetworkExceptionInterceptor` and surfaced through `MaintenanceEventBus` to take over the whole app
+  — not handled per screen. The status value is the backend's convention; confirm it per project.
 
 ### Compose
 
@@ -139,6 +161,26 @@ These are all real failures from the sibling projects, in rough order of how lon
 - **`ErrorSnackbar` / `SuccessSnackbar` are not a `SnackbarHost`** — they take layout space where
   placed. Put them in a `Box` with `Modifier.align(Alignment.BottomCenter)`; as `Column` children
   they push the footer/composer down and back each time they show.
+- **A search field cannot live in a `DropdownMenu`.** The menu is a popup and the keyboard simply
+  covers it. Use a `ModalBottomSheet` with `Modifier.imePadding()` and cap its height as a fraction of
+  the screen (`LocalConfiguration`), not a fixed dp (`SearchableOptionSheet`).
+- **Compose never destroys a `WebView`.** Give `AndroidView` an `onRelease { stopLoading();
+  loadUrl("about:blank"); destroy() }`, or an embedded video keeps playing its audio after the user
+  leaves, and a fullscreen player stays attached to the Activity.
+- **YouTube embeds need a real origin.** `loadDataWithBaseURL(null, …)` gives an opaque origin and
+  the player fails with errors 150/152/153; pass `https://<applicationId>`. The fullscreen button does
+  nothing unless the `WebChromeClient` implements `onShowCustomView` (`FullscreenChromeClient`).
+- **"List is empty" is not "still loading".** A screen that shows a spinner while `list.isEmpty()`
+  spins forever on a legitimate empty response. Gate on the request's own state (`isLoading` /
+  `error`), and start `isLoading` as `true` when the ViewModel fetches in `init`.
+- **A collector that both applies a change and decides whether it happened must read the "before"
+  value first.** Reading `state.status` after the update that set it always looks unchanged, so the
+  follow-up (a refetch) never fires.
+- **An optimistic local patch must update everything derived from the same event, or refetch.**
+  Flipping `status` locally while a timeline built from server timestamps stays as of the last fetch
+  shows a half-finished history.
+- **`PullToRefreshBox`, `ModalBottomSheet`, `Dialog` and `Popup` all compose in their own window** —
+  re-apply the language scope (`AppLanguageScope`) inside each.
 
 ### Localisation
 
@@ -165,6 +207,30 @@ language through `LocalLanguage.current.onSelect(code)`.
   existing rows when the language changes.
 
 ---
+
+### Push notifications
+
+- **Nothing arrives without Firebase set up** — the Google Services plugin plus a
+  `google-services.json` per flavor. Without them `PushMessagingService` is inert and nothing crashes,
+  which is how it goes unnoticed.
+- **Send data-only messages.** A `notification` block lets the OS draw the push itself and skips
+  `onMessageReceived` when the app is in the background — no tray id, no event, no sound.
+- **Key the tray entry by the entity, not the push** (`trayNotificationIdFor`): pushes about one
+  order replace each other, and opening the order can `cancel()` the entry. Cancel it when the
+  entity's screen opens, however the user got there.
+- **Every push is news to an open screen.** `PushMessagingService` emits on `PushEventBus`; the bell
+  badge and notification list refetch from it. Badge counts are decremented per *read event*, so
+  mark-as-read must check the notification's state first — marking blindly decrements twice.
+- **"Read" endpoints take the notification id, screens know the entity id.** The push is the only
+  place both are seen, so record the pair when it arrives and mark read when the entity's screen
+  opens (`OrderNotificationTracker` in the rider app). Persist it: the process that got the push is
+  often gone by then.
+- **A channel's settings are frozen once created.** Changing sound or importance needs a new channel
+  id, and the old one deleted so it doesn't linger in the system settings.
+- **A channel sound isn't reliable on every phone** (a Redmi played none with ring mode and alarm
+  volume up). An alert that must be heard is played directly with `MediaPlayer` on the alarm stream,
+  and `onMessageReceived` blocks until it finishes — returning early lets the process drop to the
+  background and cuts it off.
 
 ## Conventions
 
@@ -197,6 +263,13 @@ method parity.
 before "fixing" anything — several times the checker was at fault.
 
 ---
+**Money is `BigDecimal`, formatted with `formatAmount`.** A `Double` can't hold most prices exactly
+and a `Long` loses the fraction the first time the backend sends one. Whole amounts print without
+decimals, fractional ones always with two.
+
+**Say so when a workaround stands in for a real endpoint.** A fake data source, a placeholder
+illustration and a hardcoded UAT host each get a comment naming what replaces them — the next
+project inherits the file, not the conversation.
 
 ## Repo map
 
@@ -208,6 +281,7 @@ cache/           Room database, DAOs, type converters
 ui/              screens, common components, theme, navigation, viewmodels,
                  locale (in-app language switching — see docs/LOCALIZATION.md)
 di/              Hilt modules — App, Network, Service, Data, Remote
+scripts/         export_locale_strings.py — spreadsheet round-trip for translators
 docs/            architecture notes; keep these current when the shape changes
 ```
 
