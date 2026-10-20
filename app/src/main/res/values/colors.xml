@@ -7,4 +7,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- Mirrors brand_primary_default in ui/theme/Color.kt — the push notification accent. -->
+    <color name="notification_accent">#FF864DF9</color>
 </resources>

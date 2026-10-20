@@ -21,6 +21,7 @@
     <string name="pref_user_country" translatable="false">UserCountry</string>
     <string name="pref_chat_background" translatable="false">ChatBackground</string>
     <string name="pref_push_token" translatable="false">PushyToken</string>
+    <string name="pref_fcm_token" translatable="false">FcmToken</string>
     <string name="pref_user_permission" translatable="false">UserPermission</string>
     <string name="pref_notification_setting" translatable="false">NotificationSetting</string>
     <string name="pref_notification_sound_url" translatable="false">NotificationSoundUrl</string>
@@ -77,4 +78,15 @@
     <string name="cd_show_password">Show password</string>
     <string name="cd_error">Error</string>
     <string name="cd_clear_text">Clear</string>
+    <!-- App-wide states: maintenance, session expiry, app update -->
+    <string name="session_expired_title">Session Expired</string>
+    <string name="session_expired_message">Your session has expired. Please log in again.</string>
+    <string name="maintenance_title">Under Maintenance</string>
+    <string name="maintenance_subtitle">The system is temporarily unavailable due to scheduled maintenance. Services will resume shortly. Thanks for the patience.</string>
+    <string name="action_log_out">Log Out</string>
+    <string name="version_update_latest_version_label">Latest Version %1$s</string>
+    <string name="version_update_available_title">New Version Available</string>
+    <string name="action_update_now">Update Now</string>
+    <string name="action_later">Later</string>
+    <string name="notification_channel_name">Notifications</string>
 </resources>

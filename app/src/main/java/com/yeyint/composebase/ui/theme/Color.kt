@@ -115,3 +115,5 @@ val icon_light = neutral_text_light
 val icon_default = neutral_text
 val icon_success = success_default
 val disabled_button = Color(0x4D9CA1AA)
+// Light tint of the brand colour, behind the update sheet's illustration.
+val surface_brand_light = Color(0xFFF3ECFF)

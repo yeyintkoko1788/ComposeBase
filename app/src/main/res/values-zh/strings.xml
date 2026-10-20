@@ -45,4 +45,15 @@
     <string name="cd_show_password">显示密码</string>
     <string name="cd_error">错误</string>
     <string name="cd_clear_text">清除</string>
+    <!-- App-wide states: maintenance, session expiry, app update -->
+    <string name="session_expired_title">登录已过期</string>
+    <string name="session_expired_message">您的登录已过期，请重新登录。</string>
+    <string name="maintenance_title">系统维护中</string>
+    <string name="maintenance_subtitle">系统正在进行例行维护，暂时无法使用。服务将很快恢复，感谢您的耐心等待。</string>
+    <string name="action_log_out">登出</string>
+    <string name="version_update_latest_version_label">最新版本 %1$s</string>
+    <string name="version_update_available_title">发现新版本</string>
+    <string name="action_update_now">立即更新</string>
+    <string name="action_later">稍后</string>
+    <string name="notification_channel_name">通知</string>
 </resources>

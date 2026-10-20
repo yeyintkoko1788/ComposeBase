@@ -119,6 +119,27 @@ Then **launch it and make one network call.** A clean build proves nothing about
 
 ---
 
+## 8. Wire the app-wide states
+
+`MainActivity` reacts to three things that belong to the whole app, through `ui/viewmodel/MainViewModel`.
+Each works out of the box in code; each needs one project-specific decision:
+
+| What | Where | Per project |
+|---|---|---|
+| **Maintenance** — any API call answered with the maintenance status takes over the app with `MaintenanceScreen` (sticky until the process restarts) | `NetworkExceptionInterceptor`, `MaintenanceEventBus` | Confirm the status code with the backend (`HTTP_MAINTENANCE`, 503 by default) and replace the placeholder illustration `img_maintenance`. |
+| **Session expired** — a 401 the token refresh can't recover shows `SessionExpiredBottomSheet`, then sends the user to Login | `AuthenticationInterceptor` → `AuthEventBus` → `MainViewModel.sessionExpired` | Nothing, unless the start route isn't `NavRoute.Login`. |
+| **App update** — `UpdateAvailableBottomSheet`, with a force-update mode | `AppVersionRepository` → `FakeAppVersionRemoteDataSource` | Write the real `AppVersionRemoteDataSourceImpl` and change the one `@Binds` in `RemoteModule`. Until then it never prompts. Replace the placeholder illustration `img_force_update`. |
+
+**Push notifications** (`network/push/PushMessagingService`) are in the code but inert until you add
+Firebase: the Google Services plugin, a `google-services.json` for each flavor that needs push, and
+a Firebase app registered for each application ID. Without them Firebase never initialises and no
+push arrives — nothing crashes, nothing is delivered. Then rename `PushPayload.entityId`'s wire name
+to the backend's field, and read the `PushMessagingService.EXTRA_*` extras in `MainActivity` to route
+a tap to a screen. Pushes about one entity share one tray entry (`trayNotificationIdFor`); clear it
+when that entity's screen opens.
+
+---
+
 ## What you inherit
 
 Working: Hilt graph, Retrofit + OkHttp with auth/refresh interceptors, `SecurePreference`

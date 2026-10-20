@@ -1347,3 +1347,30 @@ fun Int.toPriceRange() : String{
     return priceRange.toString()
 }
 
+/** Prices: whole values print without decimals ("5,278"), anything fractional always prints two
+ *  ("105,278.99", "100,000.50") — never one, which reads as a typo for money. Money is held as
+ *  [BigDecimal], never Double/Long: a Double can't represent most prices exactly and a Long drops
+ *  the fraction the first time the backend sends one. */
+fun formatAmount(amount: java.math.BigDecimal): String {
+    val hasFraction = amount.stripTrailingZeros().scale() > 0
+    val formatter = java.text.NumberFormat.getNumberInstance(java.util.Locale.US).apply {
+        minimumFractionDigits = if (hasFraction) 2 else 0
+        maximumFractionDigits = if (hasFraction) 2 else 0
+        roundingMode = java.math.RoundingMode.HALF_UP
+    }
+    return formatter.format(amount)
+}
+
+/** Opens this app's own Play Store listing, falling back to the web listing when the Play Store
+ *  app itself isn't installed (a side-loaded or staging device, say). */
+fun android.content.Context.openPlayStoreListing() {
+    val marketIntent = android.content.Intent(
+        android.content.Intent.ACTION_VIEW,
+        android.net.Uri.parse("market://details?id=$packageName")
+    )
+    val webIntent = android.content.Intent(
+        android.content.Intent.ACTION_VIEW,
+        android.net.Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
+    )
+    runCatching { startActivity(marketIntent) }.recoverCatching { startActivity(webIntent) }
+}

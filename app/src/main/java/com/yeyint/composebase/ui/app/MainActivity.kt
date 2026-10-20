@@ -17,6 +17,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.yeyint.composebase.openPlayStoreListing
+import com.yeyint.composebase.ui.common.MaintenanceScreen
+import com.yeyint.composebase.ui.common.SessionExpiredBottomSheet
+import com.yeyint.composebase.ui.common.UpdateAvailableBottomSheet
+import com.yeyint.composebase.ui.viewmodel.MainViewModel
+import com.yeyint.composebase.uitls.AppVersion
 import com.yeyint.composebase.ui.navigation.BottomBarNav
 import com.yeyint.composebase.ui.navigation.NavGraph3
 import com.yeyint.composebase.ui.locale.AppLanguageProvider
@@ -71,6 +80,17 @@ private fun MainScreen(topLevelRoute: List<NavRoute>) {
 
     BaseTheme {
         val topLevelBackStack = remember { TopLevelBackStack<Any>(NavRoute.Login) }
+        val mainViewModel: MainViewModel = hiltViewModel()
+        val context = LocalContext.current
+
+        // Takes over everything below — the whole NavGraph and every sheet — once any API call has
+        // come back as maintenance. See MaintenanceEventBus's own doc for why this never clears.
+        val maintenance by mainViewModel.maintenance.collectAsStateWithLifecycle()
+        val maintenanceInfo = maintenance
+        if (maintenanceInfo != null) {
+            MaintenanceScreen(info = maintenanceInfo)
+            return@BaseTheme
+        }
 
         Scaffold(
             topBar = { AppTopBar(topLevelBackStack) },
@@ -89,6 +109,34 @@ private fun MainScreen(topLevelRoute: List<NavRoute>) {
             }
         ) { paddingValues ->
             NavGraph3(paddingValues, topLevelBackStack)
+        }
+
+        // A session that ended on its own (a 401 the token refresh couldn't recover). Explained
+        // first, then the user is sent to Login — not bounced silently.
+        val sessionExpired by mainViewModel.sessionExpired.collectAsStateWithLifecycle()
+        if (sessionExpired) {
+            SessionExpiredBottomSheet(
+                onLogOut = {
+                    mainViewModel.acknowledgeSessionExpired()
+                    topLevelBackStack.resetTo(NavRoute.Login)
+                }
+            )
+        }
+
+        val versionUpdateInfo by mainViewModel.versionUpdateInfo.collectAsStateWithLifecycle()
+        var showUpdateSheet by remember(versionUpdateInfo) { mutableStateOf(versionUpdateInfo != null) }
+        val info = versionUpdateInfo
+        if (showUpdateSheet && info != null) {
+            UpdateAvailableBottomSheet(
+                latestVersionLabel = "V${AppVersion.parse(info.latestVersion) ?: info.latestVersion}",
+                releaseNotes = info.releaseNotes,
+                isForceUpdate = info.forceUpdate,
+                onUpdateNow = {
+                    context.openPlayStoreListing()
+                    if (!info.forceUpdate) showUpdateSheet = false
+                },
+                onLater = { showUpdateSheet = false }
+            )
         }
     }
 }

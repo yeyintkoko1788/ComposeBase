@@ -49,4 +49,15 @@
     <string name="cd_show_password">စကားဝှက်ပြရန်</string>
     <string name="cd_error">အမှား</string>
     <string name="cd_clear_text">ရှင်းလင်းရန်</string>
+    <!-- App-wide states: maintenance, session expiry, app update -->
+    <string name="session_expired_title">သက်တမ်း ကုန်ဆုံးပါပြီ</string>
+    <string name="session_expired_message">အသုံးပြုနိုင်သည့်သက်တမ်း ကုန်ဆုံးသွားပါပြီ။ ကျေးဇူးပြု၍ ပြန်လည်ဝင်ရောက်ပါ။</string>
+    <string name="maintenance_title">ပြုပြင်ထိန်းသိမ်းမှု ပြုလုပ်နေပါသည်</string>
+    <string name="maintenance_subtitle">စနစ်သည်ပြုပြင်ထိန်းသိမ်းမှုကြောင့် ယာယီပိတ်ထားပါသည်။ ဝန်ဆောင်မှုများကို မကြာမီပြန်လည်အသုံးပြုနိုင်ပါမည်။ သည်းခံပေးမှုအတွက် ကျေးဇူးတင်ပါသည်။</string>
+    <string name="action_log_out">ထွက်ရန်</string>
+    <string name="version_update_latest_version_label">နောက်ဆုံးဗားရှင်း %1$s</string>
+    <string name="version_update_available_title">ဗားရှင်းအသစ်ရရှိနိုင်ပါပြီ</string>
+    <string name="action_update_now">ယခုအပ်ဒိတ်လုပ်ရန်</string>
+    <string name="action_later">နောက်မှ</string>
+    <string name="notification_channel_name">အသိပေးချက်များ</string>
 </resources>

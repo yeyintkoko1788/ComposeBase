@@ -36,13 +36,13 @@ plugins {
 android {
     namespace = "com.yeyint.composebase"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {
         applicationId = "com.example.composebase"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
@@ -132,6 +132,9 @@ android {
 }
 
 dependencies {
+    // Push. Also needs the Google Services plugin and a google-services.json — see docs/CLONING.md.
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

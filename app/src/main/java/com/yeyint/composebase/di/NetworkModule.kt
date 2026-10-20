@@ -4,6 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.yeyint.composebase.BuildConfig
 import com.yeyint.composebase.network.components.MyPreference
+import com.yeyint.composebase.network.components.MaintenanceEventBus
 import com.yeyint.composebase.network.exception.NetworkExceptionInterceptor
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
@@ -61,7 +62,10 @@ object NetworkModule {
         @Singleton
         @Provides
         @Named("okhttp")
-        fun providesOkHttpClientBuilder(context: Context): OkHttpClient.Builder {
+        fun providesOkHttpClientBuilder(
+            context: Context,
+            maintenanceEventBus: MaintenanceEventBus
+        ): OkHttpClient.Builder {
             return OkHttpClient.Builder().apply {
                 val loggerInterceptor = HttpLoggingInterceptor().apply {
                     level = when (BuildConfig.DEBUG) {
@@ -76,7 +80,7 @@ object NetworkModule {
                         ).alwaysReadResponseBody(false).build()
                     )
                    // .addInterceptor(OkHttpProfilerInterceptor())
-                    .addInterceptor(NetworkExceptionInterceptor())
+                    .addInterceptor(NetworkExceptionInterceptor(maintenanceEventBus))
                     .readTimeout(300, TimeUnit.SECONDS)
                     .writeTimeout(300, TimeUnit.SECONDS)
                     .connectTimeout(60, TimeUnit.SECONDS)
@@ -87,7 +91,10 @@ object NetworkModule {
         @Singleton
         @Provides
         @Named("authOkhttp")
-        fun providesAuthOkHttpClientBuilder(context: Context): OkHttpClient.Builder {
+        fun providesAuthOkHttpClientBuilder(
+            context: Context,
+            maintenanceEventBus: MaintenanceEventBus
+        ): OkHttpClient.Builder {
             return OkHttpClient.Builder().apply {
                 val loggerInterceptor = HttpLoggingInterceptor().apply {
                     level = when (BuildConfig.DEBUG) {
@@ -102,7 +109,7 @@ object NetworkModule {
                         ).alwaysReadResponseBody(false).build()
                     )
                   //  .addInterceptor(OkHttpProfilerInterceptor())
-                    .addInterceptor(NetworkExceptionInterceptor())
+                    .addInterceptor(NetworkExceptionInterceptor(maintenanceEventBus))
                     .readTimeout(60, TimeUnit.SECONDS)
                     .writeTimeout(60, TimeUnit.SECONDS)
                     .connectTimeout(60, TimeUnit.SECONDS)

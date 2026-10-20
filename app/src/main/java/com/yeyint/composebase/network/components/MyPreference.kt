@@ -53,6 +53,12 @@ class MyPreference @Inject constructor(private val context : Context){
         return sharedPreferences.getString(context.getString(key.label) , key.defaultValue)
     }
 
+    fun saveFcmToken(token: String) {
+        save(KEYS.FCM_TOKEN, token)
+    }
+
+    fun getFcmToken(): String = load(KEYS.FCM_TOKEN) ?: ""
+
     fun save(key : KEYI, value : Int) {
         sharedPreferences.edit().putInt(context.getString(key.label) , value).commit()
     }
@@ -117,6 +123,7 @@ class MyPreference @Inject constructor(private val context : Context){
         USER_COUNTRY(R.string.pref_user_country, ""),
         CHAT_BACKGROUND(R.string.pref_chat_background, ""),
         LOCALE(R.string.pref_locale, LOCALE_EN),
+        FCM_TOKEN(R.string.pref_fcm_token, ""),
         MY_COLLECTION(R.string.pref_my_collection, ""),
         PUSHY_TOKEN(R.string.pref_push_token, ""),
         CURRENT_LOCATION_LAT(R.string.pref_current_location_lat, ""),
